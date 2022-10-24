@@ -32,6 +32,18 @@ wlr-layer-shell-unstable-v1-protocol.h:
 	$(WAYLAND_SCANNER) server-header \
 		protocols/wlr-layer-shell-unstable-v1.xml $@
 
+
+ 
+net-tapesoftware-dwl-wm-unstable-v1-protocol.h: protocols/net-tapesoftware-dwl-wm-unstable-v1.xml
+	$(WAYLAND_SCANNER) server-header \
+		protocols/net-tapesoftware-dwl-wm-unstable-v1.xml $@
+net-tapesoftware-dwl-wm-unstable-v1-protocol.c: protocols/net-tapesoftware-dwl-wm-unstable-v1.xml
+	$(WAYLAND_SCANNER) private-code \
+		protocols/net-tapesoftware-dwl-wm-unstable-v1.xml $@
+net-tapesoftware-dwl-wm-unstable-v1-protocol.o: net-tapesoftware-dwl-wm-unstable-v1-protocol.h
+dwl.o: net-tapesoftware-dwl-wm-unstable-v1-protocol.h
+dwl: net-tapesoftware-dwl-wm-unstable-v1-protocol.o
+
 config.h:
 	cp config.def.h $@
 clean:
