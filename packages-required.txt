@@ -1,0 +1,4 @@
+swaybg 
+gammastep 
+inotify-tools
+bemenu-run

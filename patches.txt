@@ -1,0 +1,4 @@
+https://github.com/djpohly/dwl/wiki/autostart
+https://github.com/djpohly/dwl/wiki/vanitygaps
+https://github.com/djpohly/dwl/wiki/attachbottom
+https://github.com/djpohly/dwl/wiki/unclutter

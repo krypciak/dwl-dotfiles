@@ -2,6 +2,12 @@
 static const int sloppyfocus        = 1;  /* focus follows mouse */
 static const unsigned int borderpx  = 1;  /* border pixel of windows */
 static const int lockfullscreen     = 1;  /* 1 will force focus on the fullscreen window */
+static const unsigned int gappih    = 10;       /* horiz inner gap between windows */
+static const unsigned int gappiv    = 10;       /* vert inner gap between windows */
+static const unsigned int gappoh    = 10;       /* horiz outer gap between windows and screen edge */
+static const unsigned int gappov    = 10;       /* vert outer gap between windows and screen edge */
+static const int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
+static const int monoclegaps        = 0;        /* 1 means outer gaps in monocle layout */
 static const float rootcolor[]      = {0.3, 0.3, 0.3, 1.0};
 static const float bordercolor[]    = {0.5, 0.5, 0.5, 1.0};
 static const float focuscolor[]     = {1.0, 0.0, 0.0, 1.0};
@@ -85,6 +91,13 @@ LIBINPUT_CONFIG_ACCEL_PROFILE_ADAPTIVE
 */
 static const enum libinput_config_accel_profile accel_profile = LIBINPUT_CONFIG_ACCEL_PROFILE_ADAPTIVE;
 static const double accel_speed = 0.0;
+static const int cursor_timeout = 5;
+
+/* Autostart */
+static const char *const autostart[] = {
+        "sh", "-c", "swaybg --image /xap/local/background", NULL,
+        NULL /* terminate */
+};
 
 /* If you want to use the windows key change this to WLR_MODIFIER_LOGO */
 #define MODKEY WLR_MODIFIER_ALT
@@ -112,6 +125,22 @@ static const Key keys[] = {
 	{ MODKEY,                    XKB_KEY_d,          incnmaster,     {.i = -1} },
 	{ MODKEY,                    XKB_KEY_h,          setmfact,       {.f = -0.05} },
 	{ MODKEY,                    XKB_KEY_l,          setmfact,       {.f = +0.05} },
+	{ MODKEY|WLR_MODIFIER_LOGO,  XKB_KEY_h,          incgaps,       {.i = +1 } },
+	{ MODKEY|WLR_MODIFIER_LOGO,  XKB_KEY_l,          incgaps,       {.i = -1 } },
+	{ MODKEY|WLR_MODIFIER_LOGO|WLR_MODIFIER_SHIFT,   XKB_KEY_H,      incogaps,      {.i = +1 } },
+	{ MODKEY|WLR_MODIFIER_LOGO|WLR_MODIFIER_SHIFT,   XKB_KEY_L,      incogaps,      {.i = -1 } },
+	{ MODKEY|WLR_MODIFIER_LOGO|WLR_MODIFIER_CTRL,    XKB_KEY_h,      incigaps,      {.i = +1 } },
+	{ MODKEY|WLR_MODIFIER_LOGO|WLR_MODIFIER_CTRL,    XKB_KEY_l,      incigaps,      {.i = -1 } },
+	{ MODKEY|WLR_MODIFIER_LOGO,  XKB_KEY_0,          togglegaps,     {0} },
+	{ MODKEY|WLR_MODIFIER_LOGO|WLR_MODIFIER_SHIFT,   XKB_KEY_parenright,defaultgaps,    {0} },
+	{ MODKEY,                    XKB_KEY_y,          incihgaps,     {.i = +1 } },
+	{ MODKEY,                    XKB_KEY_o,          incihgaps,     {.i = -1 } },
+	{ MODKEY|WLR_MODIFIER_CTRL,  XKB_KEY_y,          incivgaps,     {.i = +1 } },
+	{ MODKEY|WLR_MODIFIER_CTRL,  XKB_KEY_o,          incivgaps,     {.i = -1 } },
+	{ MODKEY|WLR_MODIFIER_LOGO,  XKB_KEY_y,          incohgaps,     {.i = +1 } },
+	{ MODKEY|WLR_MODIFIER_LOGO,  XKB_KEY_o,          incohgaps,     {.i = -1 } },
+	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_Y,          incovgaps,     {.i = +1 } },
+	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_O,          incovgaps,     {.i = -1 } },
 	{ MODKEY,                    XKB_KEY_Return,     zoom,           {0} },
 	{ MODKEY,                    XKB_KEY_Tab,        view,           {0} },
 	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_C,          killclient,     {0} },
