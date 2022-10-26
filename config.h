@@ -24,15 +24,17 @@ static const float fullscreen_bg[]  = {0.1, 0.1, 0.1, 1.0};
 /* tagging */
 static const char *tags[] = { "1", "2", "3" };
 
+
 static const Rule rules[] = {
-	/* app_id     title       tags mask     isfloating   monitor */
+	/* app_id     title       tags mask     isfloating  isterm  noswallow  monitor */
 	/* examples:
-	{ "Gimp",     NULL,       0,            1,           -1 },
+	{ "Gimp",     NULL,       0,            1,          0,      1,         -1 },
 	*/
-	{ "firefox",  NULL,       1 << 8,       0,           -1 },
+	{ "firefox",  NULL,       1 << 8,       0,          0,      1,         -1 },
 };
 
 /* layout(s) */
+static const int DEFAULT_LAYOUT = 0;
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },
@@ -47,7 +49,7 @@ static const MonitorRule monrules[] = {
 	{ "eDP-1",    0.5,  1,      2,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL },
 	*/
 	/* defaults */
-	{ NULL,       0.5, 1,      1,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL },
+	{ NULL,       0.5, 1,      1,    &layouts[DEFAULT_LAYOUT], WL_OUTPUT_TRANSFORM_NORMAL },
 };
 
 /* keyboard */
@@ -134,17 +136,18 @@ static const Key keys[] = {
 	{ ALT,                      XKB_KEY_Return,     spawn,          {.v = termcmd} },
 	{ SUPER,                    XKB_KEY_j,          focusstack,     {.i = +1} },
 	{ SUPER,                    XKB_KEY_k,          focusstack,     {.i = -1} },
-	{ SUPER|SHIFT,              XKB_KEY_L,          incnmaster,     {.i = +1} },
-	{ SUPER|SHIFT,              XKB_KEY_H,          incnmaster,     {.i = -1} },
+	{ SUPER|SHIFT,              XKB_KEY_L,          incnmaster,     {.i = -1} },
+	{ SUPER|SHIFT,              XKB_KEY_H,          incnmaster,     {.i = +1} },
 	{ SUPER,                    XKB_KEY_h,          setmfact,       {.f = -0.05} },
 	{ SUPER,                    XKB_KEY_l,          setmfact,       {.f = +0.05} },
     { SUPER|CTRL,               XKB_KEY_Return,     zoom,           {0} },
 	{ SUPER|SHIFT,              XKB_KEY_C,          killclient,     {0} },
-	//{ SUPER,                    XKB_KEY_t,          setlayout,      {.v = &layouts[0]} },
-	//{ SUPER,                    XKB_KEY_f,          setlayout,      {.v = &layouts[1]} },
-	//{ SUPER,                    XKB_KEY_m,          setlayout,      {.v = &layouts[2]} },
+	
+    { SUPER,                    XKB_KEY_r,          inclayout,      {.i = +1} },
+	{ SUPER,                    XKB_KEY_f,          inclayout,      {.i = -1} },
     //{ SUPER,                    XKB_KEY_space,      setlayout,      {0} },
-	{ SUPER|SHIFT,              XKB_KEY_space,      togglefloating, {0} },
+	
+    { SUPER|SHIFT,              XKB_KEY_space,      togglefloating, {0} },
 	{ SUPER,                    XKB_KEY_m,          togglefullscreen, {0} },
 	{ SUPER,                    XKB_KEY_0,          view,           {.ui = ~0} },
 	{ SUPER|SHIFT,              XKB_KEY_parenright, tag,            {.ui = ~0} },

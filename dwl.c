@@ -289,6 +289,7 @@ static void setcursor(struct wl_listener *listener, void *data);
 static void setfloating(Client *c, int floating);
 static void setfullscreen(Client *c, int fullscreen);
 static void setgaps(int oh, int ov, int ih, int iv);
+static void inclayout(const Arg *arg);
 static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
 static void setmon(Client *c, Monitor *m, unsigned int newtags);
@@ -364,6 +365,7 @@ static Monitor *selmon;
 
 static int enablegaps = 1;   /* enables gaps, used by togglegaps */
 
+
 /* global event handlers */
 static struct wl_listener cursor_axis = {.notify = axisnotify};
 static struct wl_listener cursor_button = {.notify = buttonpress};
@@ -403,6 +405,9 @@ static Atom netatom[NetLast];
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
+
+static int current_layout = DEFAULT_LAYOUT;
+static const size_t LAYOUTS_LEN = sizeof(layouts)/sizeof(layouts[0]);
 
 /* attempt to encapsulate suck into one file */
 #include "client.h"
@@ -2266,6 +2271,25 @@ setgaps(int oh, int ov, int ih, int iv)
 	selmon->gappih = MAX(ih, 0);
 	selmon->gappiv = MAX(iv, 0);
 	arrange(selmon);
+}
+
+void inclayout(const Arg *arg) {
+	if (!selmon)
+		return;
+	if (!arg || !arg->v || arg->v != selmon->lt[selmon->sellt])
+		selmon->sellt ^= 1;
+
+    
+	if (arg && arg->v) {
+        current_layout += (int) arg->v;
+        if(current_layout < 0) { current_layout = LAYOUTS_LEN - 1; }
+        else if(current_layout >= LAYOUTS_LEN) { current_layout = 0; }
+
+		selmon->lt[selmon->sellt] = (Layout *) &layouts[current_layout];
+    }
+	/* TODO change layout symbol? */
+	arrange(selmon);
+	printstatus();
 }
 
 void
