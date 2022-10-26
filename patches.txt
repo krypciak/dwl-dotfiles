@@ -3,3 +3,4 @@ https://github.com/djpohly/dwl/wiki/vanitygaps
 https://github.com/djpohly/dwl/wiki/attachbottom
 https://github.com/djpohly/dwl/wiki/unclutter
 https://github.com/djpohly/dwl/wiki/swallow
+https://github.com/djpohly/dwl/wiki/pertag
