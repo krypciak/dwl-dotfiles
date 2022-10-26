@@ -34,12 +34,12 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
-static const int DEFAULT_LAYOUT = 0;
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
+    { NULL,       NULL },
 };
 
 /* monitors */
@@ -49,7 +49,7 @@ static const MonitorRule monrules[] = {
 	{ "eDP-1",    0.5,  1,      2,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL },
 	*/
 	/* defaults */
-	{ NULL,       0.5, 1,      1,    &layouts[DEFAULT_LAYOUT], WL_OUTPUT_TRANSFORM_NORMAL },
+	{ NULL,       0.5, 1,      1,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL },
 };
 
 /* keyboard */
@@ -143,8 +143,8 @@ static const Key keys[] = {
     { SUPER|CTRL,               XKB_KEY_Return,     zoom,           {0} },
 	{ SUPER|SHIFT,              XKB_KEY_C,          killclient,     {0} },
 	
-    { SUPER,                    XKB_KEY_r,          inclayout,      {.i = +1} },
-	{ SUPER,                    XKB_KEY_f,          inclayout,      {.i = -1} },
+    { SUPER,                    XKB_KEY_r,          cyclelayout,      {.i = +1} },
+	{ SUPER,                    XKB_KEY_f,          cyclelayout,      {.i = -1} },
     //{ SUPER,                    XKB_KEY_space,      setlayout,      {0} },
 	
     { SUPER|SHIFT,              XKB_KEY_space,      togglefloating, {0} },

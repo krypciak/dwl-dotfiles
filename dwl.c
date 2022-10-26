@@ -241,6 +241,7 @@ static void createmon(struct wl_listener *listener, void *data);
 static void createnotify(struct wl_listener *listener, void *data);
 static void createpointer(struct wlr_input_device *device);
 static void cursorframe(struct wl_listener *listener, void *data);
+static void cyclelayout(const Arg *arg);
 static void defaultgaps(const Arg *arg);
 static void destroydragicon(struct wl_listener *listener, void *data);
 static void destroyidleinhibitor(struct wl_listener *listener, void *data);
@@ -291,7 +292,6 @@ static void setcursor(struct wl_listener *listener, void *data);
 static void setfloating(Client *c, int floating);
 static void setfullscreen(Client *c, int fullscreen);
 static void setgaps(int oh, int ov, int ih, int iv);
-static void inclayout(const Arg *arg);
 static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
 static void setmon(Client *c, Monitor *m, unsigned int newtags);
@@ -407,9 +407,6 @@ static Atom netatom[NetLast];
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
-
-static int current_layout = DEFAULT_LAYOUT;
-static const size_t LAYOUTS_LEN = sizeof(layouts)/sizeof(layouts[0]);
 
 /* attempt to encapsulate suck into one file */
 #include "client.h"
@@ -1184,6 +1181,24 @@ cursorframe(struct wl_listener *listener, void *data)
 	 * same time, in which case a frame event won't be sent in between. */
 	/* Notify the client with pointer focus of the frame event. */
 	wlr_seat_pointer_notify_frame(seat);
+}
+
+void
+cyclelayout(const Arg *arg)
+{
+	Layout *l;
+	for (l = (Layout *)layouts; l != selmon->lt[selmon->sellt]; l++);
+	if (arg->i > 0) {
+		if (l->symbol && (l + 1)->symbol)
+			setlayout(&((Arg) { .v = (l + 1) }));
+		else
+			setlayout(&((Arg) { .v = layouts }));
+	} else {
+		if (l != layouts && (l - 1)->symbol)
+			setlayout(&((Arg) { .v = (l - 1) }));
+		else
+			setlayout(&((Arg) { .v = &layouts[LENGTH(layouts) - 2] }));
+	}
 }
 
 void
@@ -2293,25 +2308,6 @@ setgaps(int oh, int ov, int ih, int iv)
 	selmon->gappih = MAX(ih, 0);
 	selmon->gappiv = MAX(iv, 0);
 	arrange(selmon);
-}
-
-void inclayout(const Arg *arg) {
-	if (!selmon)
-		return;
-	if (!arg || !arg->v || arg->v != selmon->lt[selmon->sellt])
-		selmon->sellt ^= 1;
-
-    
-	if (arg && arg->v) {
-        current_layout += (int) arg->v;
-        if(current_layout < 0) { current_layout = LAYOUTS_LEN - 1; }
-        else if(current_layout >= LAYOUTS_LEN) { current_layout = 0; }
-
-		selmon->lt[selmon->sellt] = (Layout *) &layouts[current_layout];
-    }
-	/* TODO change layout symbol? */
-	arrange(selmon);
-	printstatus();
 }
 
 void
