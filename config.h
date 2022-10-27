@@ -2,6 +2,7 @@
 #define ALT WLR_MODIFIER_ALT
 #define SHIFT WLR_MODIFIER_SHIFT
 #define CTRL WLR_MODIFIER_CTRL
+#define CAPS WLR_MODIFIER_MOD3
 
 /* appearance */
 static const int sloppyfocus        = 0;  /* focus follows mouse */
@@ -55,10 +56,9 @@ static const MonitorRule monrules[] = {
 /* keyboard */
 static const struct xkb_rule_names xkb_rules = {
 	/* can specify fields: rules, model, layout, variant, options */
-	/* example:
-	.options = "ctrl:nocaps",
-	*/
-	.options = NULL,
+    .layout = "pl,us",
+    // this is accually a workaround for using capslock as a modkey, caps:shiftlock is modified
+	.options = "caps:shiftlock",
 };
 
 static const int repeat_rate = 25;
@@ -129,9 +129,18 @@ static const char *const pkill_at_exit[] = {
 static const char *termcmd[] = { "alacritty", NULL };
 static const char *menucmd[] = { "fuzzel", "--log-no-syslog", NULL };
 
+
+static const char *poweroff_cmd[] =  { "loginctl", "poweroff", NULL };
+static const char *reboot_cmd[] =    { "loginctl", "reboot", NULL };
+static const char *lock_cmd[] =      { "", "", NULL };
+static const char *suspend_cmd[] =   { "loginctl", "suspend", NULL };
+static const char *hibernate_cmd[] = { "loginctl", "hibernate", NULL };
+
 static const Key keys[] = {
 	/* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
 	/* modifier                  key                 function        argument */
+
+
 	{ ALT,                      XKB_KEY_r,          spawn,          {.v = menucmd} },
 	{ ALT,                      XKB_KEY_Return,     spawn,          {.v = termcmd} },
 	{ SUPER,                    XKB_KEY_j,          focusstack,     {.i = +1} },
@@ -143,8 +152,8 @@ static const Key keys[] = {
     { SUPER|CTRL,               XKB_KEY_Return,     zoom,           {0} },
 	{ SUPER|SHIFT,              XKB_KEY_C,          killclient,     {0} },
 	
-    { SUPER,                    XKB_KEY_r,          cyclelayout,      {.i = +1} },
-	{ SUPER,                    XKB_KEY_f,          cyclelayout,      {.i = -1} },
+    { CAPS,                    XKB_KEY_r,          cyclelayout,      {.i = +1} },
+	{ CAPS,                    XKB_KEY_f,          cyclelayout,      {.i = -1} },
     //{ SUPER,                    XKB_KEY_space,      setlayout,      {0} },
 	
     { SUPER|SHIFT,              XKB_KEY_space,      togglefloating, {0} },
@@ -158,7 +167,17 @@ static const Key keys[] = {
 	TAGKEYS(                    XKB_KEY_Tab,        XKB_KEY_ISO_Left_Tab,    0),
 	TAGKEYS(                    XKB_KEY_q,          XKB_KEY_Q,      1),
 	TAGKEYS(                    XKB_KEY_w,          XKB_KEY_W,      2),
+
+
+    // power keys
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_Q,          quit,           {0} },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_P,          spawn,          {.v = poweroff_cmd } },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_R,          spawn,          {.v = reboot_cmd } },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_S,          spawn,          {.v = suspend_cmd } },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_H,          spawn,          {.v = hibernate_cmd } },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_L,          spawn,          {.v = lock_cmd } },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_M,          restartdwl,    {0} },
+
 #define CHVT(n) { CTRL|ALT,XKB_KEY_XF86Switch_VT_##n, chvt, {.ui = (n)} }
 	CHVT(1), CHVT(2), CHVT(3), CHVT(4), CHVT(5), CHVT(6),
 	CHVT(7), CHVT(8), CHVT(9), CHVT(10), CHVT(11), CHVT(12),
