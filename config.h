@@ -126,8 +126,6 @@ static const char *const pkill_at_exit[] = {
 //#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 #define CMD(...) { .v = (const char*[]){ __VA_ARGS__, NULL } }
 
-/* commands */
-
 static const Key keys[] = {
 	/* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
 	/* modifier                  key                 function        argument */
@@ -159,18 +157,31 @@ static const Key keys[] = {
 	TAGKEYS(                    XKB_KEY_w,          XKB_KEY_W,      2),
     
     // media
-    { CAPS,                     XKB_KEY_e,          spawn,          CMD("amixer set Master 5%+") },
-    { CAPS,                     XKB_KEY_d,          spawn,          CMD("alacritty", "-e", "chromium") },
+    { CAPS,                     XKB_KEY_e,          spawn,          CMD("amixer", "set", "Master", "5%+") },
+    { CAPS,                     XKB_KEY_d,          spawn,          CMD("amixer", "set", "Master", "5%-") },
+
+    // gaps
+    { CAPS,                     XKB_KEY_y,          incgaps,        {.i = +1} },
+    { CAPS,                     XKB_KEY_h,          incgaps,        {.i = -1} },
+
+    // walpaper
+    //{ CAPS,                     XKB_KEY_t,          group
+    //{ CAPS,                     XKB_KEY_g,          index
+    
+    // screen
+    // next screen
+    // prev screen
+    //{ CAPS,                     XKB_KEY_v,          spawn,          CMD("") },
 
     // power keys
-	{ SUPER|CTRL|SHIFT,         XKB_KEY_Q,          quit,           {0} },
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_P,          spawn,          CMD("loginctl", "poweroff") },
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_R,          spawn,          CMD("loginctl", "reboot") },
-	{ SUPER|CTRL|SHIFT,         XKB_KEY_L,          spawn,          CMD("", "") },
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_S,          spawn,          CMD("loginctl", "suspend") },
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_H,          spawn,          CMD("loginctl", "hibernate") },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_Q,          quit,           {0} },
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_N,          spawnwithvars,  CMD("alacritty", "-e", "@HOME/.config/dwl/dwl-dotfiles/scripts/makeandexit.sh") },
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_M,          restartdwl,     {0} },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_L,          spawn,          CMD("", "") },
 
 #define CHVT(n) { CTRL|ALT,XKB_KEY_XF86Switch_VT_##n, chvt, {.ui = (n)} }
 	CHVT(1), CHVT(2), CHVT(3), CHVT(4), CHVT(5), CHVT(6),
