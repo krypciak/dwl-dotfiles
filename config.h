@@ -103,9 +103,9 @@ static const double accel_speed = 0.0;
 static const int cursor_timeout = 2;
 
 /* Autostart */
-static const char *const autostart[] = {
+static char *autostart[] = {
         "gammastep", "-r", NULL,
-        "swaybg", "--mode", "center", "--image", "/home/krypek/.config/awesome/theme/wallpapers/oneshot/factory.png", NULL,
+        "swaybg", "--mode", "center", "--image", "@HOME/.config/awesome/theme/wallpapers/oneshot/factory.png", NULL,
         "copyq", NULL,
         "pulseaudio", "--start", NULL,
         NULL /* terminate */
@@ -123,26 +123,16 @@ static const char *const pkill_at_exit[] = {
 	{ ALT|CTRL|SHIFT,     SKEY,           toggletag,       {.ui = 1 << TAG} }
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
-#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+//#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+#define CMD(...) { .v = (const char*[]){ __VA_ARGS__, NULL } }
 
 /* commands */
-static const char *termcmd[] = { "alacritty", NULL };
-static const char *menucmd[] = { "fuzzel", "--log-no-syslog", NULL };
-
-
-static const char *poweroff_cmd[] =  { "loginctl", "poweroff", NULL };
-static const char *reboot_cmd[] =    { "loginctl", "reboot", NULL };
-static const char *lock_cmd[] =      { "", "", NULL };
-static const char *suspend_cmd[] =   { "loginctl", "suspend", NULL };
-static const char *hibernate_cmd[] = { "loginctl", "hibernate", NULL };
 
 static const Key keys[] = {
 	/* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
 	/* modifier                  key                 function        argument */
-
-
-	{ ALT,                      XKB_KEY_r,          spawn,          {.v = menucmd} },
-	{ ALT,                      XKB_KEY_Return,     spawn,          {.v = termcmd} },
+	{ ALT,                      XKB_KEY_r,          spawn,          CMD("fuzzel", "--log-no-syslog") },
+	{ ALT,                      XKB_KEY_Return,     spawn,          CMD("alacritty") },
 	{ SUPER,                    XKB_KEY_j,          focusstack,     {.i = +1} },
 	{ SUPER,                    XKB_KEY_k,          focusstack,     {.i = -1} },
 	{ SUPER|SHIFT,              XKB_KEY_L,          incnmaster,     {.i = -1} },
@@ -167,16 +157,20 @@ static const Key keys[] = {
 	TAGKEYS(                    XKB_KEY_Tab,        XKB_KEY_ISO_Left_Tab,    0),
 	TAGKEYS(                    XKB_KEY_q,          XKB_KEY_Q,      1),
 	TAGKEYS(                    XKB_KEY_w,          XKB_KEY_W,      2),
-
+    
+    // media
+    { CAPS,                     XKB_KEY_e,          spawn,          CMD("amixer set Master 5%+") },
+    { CAPS,                     XKB_KEY_d,          spawn,          CMD("alacritty", "-e", "chromium") },
 
     // power keys
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_Q,          quit,           {0} },
-	{ SUPER|CTRL|SHIFT,         XKB_KEY_P,          spawn,          {.v = poweroff_cmd } },
-	{ SUPER|CTRL|SHIFT,         XKB_KEY_R,          spawn,          {.v = reboot_cmd } },
-	{ SUPER|CTRL|SHIFT,         XKB_KEY_S,          spawn,          {.v = suspend_cmd } },
-	{ SUPER|CTRL|SHIFT,         XKB_KEY_H,          spawn,          {.v = hibernate_cmd } },
-	{ SUPER|CTRL|SHIFT,         XKB_KEY_L,          spawn,          {.v = lock_cmd } },
-	{ SUPER|CTRL|SHIFT,         XKB_KEY_M,          restartdwl,    {0} },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_P,          spawn,          CMD("loginctl", "poweroff") },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_R,          spawn,          CMD("loginctl", "reboot") },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_L,          spawn,          CMD("", "") },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_S,          spawn,          CMD("loginctl", "suspend") },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_H,          spawn,          CMD("loginctl", "hibernate") },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_N,          spawnwithvars,  CMD("alacritty", "-e", "@HOME/.config/dwl/dwl-dotfiles/scripts/makeandexit.sh") },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_M,          restartdwl,     {0} },
 
 #define CHVT(n) { CTRL|ALT,XKB_KEY_XF86Switch_VT_##n, chvt, {.ui = (n)} }
 	CHVT(1), CHVT(2), CHVT(3), CHVT(4), CHVT(5), CHVT(6),

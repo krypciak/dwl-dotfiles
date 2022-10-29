@@ -224,6 +224,7 @@ static void arrangelayer(Monitor *m, struct wl_list *list,
 		struct wlr_box *usable_area, int exclusive);
 static void arrangelayers(Monitor *m);
 static void autostartexec(void);
+static char* fillstringwithvars(char *str);
 static void axisnotify(struct wl_listener *listener, void *data);
 static void buttonpress(struct wl_listener *listener, void *data);
 static void chvt(const Arg *arg);
@@ -301,6 +302,7 @@ static void setsel(struct wl_listener *listener, void *data);
 static void setup(void);
 static void sigchld(int unused);
 static void spawn(const Arg *arg);
+static void spawnwithvars(const Arg *arg);
 static void startdrag(struct wl_listener *listener, void *data);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
@@ -368,6 +370,7 @@ static Monitor *selmon;
 
 static int enablegaps = 1;   /* enables gaps, used by togglegaps */
 
+static const char* userhome;
 
 /* global event handlers */
 static struct wl_listener cursor_axis = {.notify = axisnotify};
@@ -454,19 +457,51 @@ applybounds(Client *c, struct wlr_box *bbox)
 		c->geom.y = bbox->y;
 }
 
+char* 
+fillstringwithvars(char *str) 
+{
+    char* dest = malloc(sizeof (char) * 100);
+    // remove the @ at the start
+    str++;
+
+    #define HOME_LEN 4
+    if(strncmp(str, "HOME", HOME_LEN) == 0) {
+        strcpy(dest, userhome);
+        str+=HOME_LEN;
+    } else {
+        printf("error filling string with vars: %s\n", str);
+    }
+    strcat(dest, str);
+    //printf("var: %s\n", dest);
+    return dest;
+}
+
 void
-autostartexec(void) {
-	const char *const *p;
+autostartexec(void)
+{
+	char **p;
 	size_t i = 0;
+
+    userhome = getenv("HOME");
 
 	/* count entries */
 	for (p = autostart; *p; autostart_len++, p++)
 		while (*++p);
 
+    for(i = 0; i < sizeof(autostart) / sizeof(autostart[0]); i++) {
+        if(autostart[i] != NULL) {
+            if(strncmp(autostart[i], "@", strlen("@")) == 0) {
+                autostart[i] = fillstringwithvars(autostart[i]);
+            }
+        }
+    }
+
+
 	autostart_pids = calloc(autostart_len, sizeof(pid_t));
+    i = 0;
 	for (p = autostart; *p; i++, p++) {
 		if ((autostart_pids[i] = fork()) == 0) {
-			setsid();
+            setsid();
 			execvp(*p, (char *const *)p);
 			fprintf(stderr, "dwl: execvp %s\n", *p);
 			perror(" failed");
@@ -475,6 +510,7 @@ autostartexec(void) {
 		/* skip arguments */
 		while (*++p);
 	}
+    //free(autostart);
 }
 
 void
@@ -1690,6 +1726,9 @@ mapnotify(struct wl_listener *listener, void *data)
 	/* Called when the surface is mapped, or ready to display on-screen. */
 	Client *p, *c = wl_container_of(listener, c, map);
 	int i;
+	
+    /* for swallow patch */
+    Client *p1 = termforwin(c);
 
 	/* Create scene tree for this client and its border */
 	c->scene = &wlr_scene_tree_create(layers[LyrTile])->node;
@@ -1757,15 +1796,14 @@ mapnotify(struct wl_listener *listener, void *data)
 
 	c->mon->un_map = 1;
 	if (!c->noswallow) {
-			Client *p = termforwin(c);
-			if (p) {
-					c->swallowedby = p;
-					p->swallowing  = c;
+			if (p1) {
+					c->swallowedby = p1;
+					p1->swallowing  = c;
 					wl_list_remove(&c->link);
 					wl_list_remove(&c->flink);
-					swallow(c,p);
-					wl_list_remove(&p->link);
-					wl_list_remove(&p->flink);
+					swallow(c,p1);
+					wl_list_remove(&p1->link);
+					wl_list_remove(&p1->flink);
 			}
 			arrange(c->mon);
 	}
@@ -2076,12 +2114,8 @@ quit(const Arg *arg)
 		}
 	}
     
-	const char *const *p;
-    size_t pkill_at_exit_len = 0;
-	for (p = autostart; *p; pkill_at_exit_len++, p++)
-		while (*++p);
 
-    for (i = 0; i < pkill_at_exit_len; i++) {
+    for(i = 0; i < sizeof(pkill_at_exit) / sizeof(pkill_at_exit[0]); i++) {
         char *cmd = malloc(strlen("pkill ")+strlen(pkill_at_exit[i]) + 2);
         sprintf(cmd, "pkill %s", pkill_at_exit[i]);
         system(cmd);
@@ -2609,6 +2643,32 @@ spawn(const Arg *arg)
 		setsid();
 		execvp(((char **)arg->v)[0], (char **)arg->v);
 		die("dwl: execvp %s failed:", ((char **)arg->v)[0]);
+	}
+}
+
+void 
+spawnwithvars(const Arg *arg) 
+{
+    size_t i;
+    char **arr = (char **)arg->v;
+	char **p;
+    size_t arr_len = 0;
+
+	for (p = arr; *p; arr_len++, p++) {}
+
+    for(i = 0; i < arr_len; i++) {
+        if(arr[i] != NULL) {
+            if(strncmp(arr[i], "@", strlen("@")) == 0) {
+                arr[i] = fillstringwithvars(arr[i]);
+            }
+        }
+    }
+
+	if (fork() == 0) {
+		dup2(STDERR_FILENO, STDOUT_FILENO);
+		setsid();
+		execvp(arr[0], arr);
+		die("dwl: execvp %s failed:", arr[0]);
 	}
 }
 
