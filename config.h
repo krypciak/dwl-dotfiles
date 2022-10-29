@@ -130,13 +130,9 @@ static const Key keys[] = {
 	/* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
 	/* modifier                  key                 function        argument */
     { SUPER|CTRL,               XKB_KEY_Return,     zoom,           {0} },
-	{ SUPER|SHIFT,              XKB_KEY_C,          killclient,     {0} },
 	
     //{ SUPER,                    XKB_KEY_space,      setlayout,      {0} },
 	
-    { SUPER|SHIFT,              XKB_KEY_space,      togglefloating, {0} },
-	{ SUPER,                    XKB_KEY_m,          togglefullscreen, {0} },
-	{ SUPER,                    XKB_KEY_0,          view,           {.ui = ~0} },
 	{ SUPER|SHIFT,              XKB_KEY_parenright, tag,            {.ui = ~0} },
     // monitor
 	{ SUPER,                    XKB_KEY_comma,      focusmon,       {.i = WLR_DIRECTION_LEFT} },
@@ -148,7 +144,10 @@ static const Key keys[] = {
 	TAGKEYS(                    XKB_KEY_Tab,        XKB_KEY_ISO_Left_Tab,    0),
 	TAGKEYS(                    XKB_KEY_q,          XKB_KEY_Q,      1),
 	TAGKEYS(                    XKB_KEY_w,          XKB_KEY_W,      2),
-    
+    // view all tags at once
+	{ SUPER,                    XKB_KEY_0,          view,           {.ui = ~0} },
+
+
     // media
     { CAPS,                     XKB_KEY_e,          spawn,          CMD("amixer", "set", "Master", "5%+") },
     { CAPS,                     XKB_KEY_d,          spawn,          CMD("amixer", "set", "Master", "5%-") },
@@ -174,18 +173,32 @@ static const Key keys[] = {
     { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill discord") },
 
     // layout 
+    // master count
 	{ SUPER|SHIFT,              XKB_KEY_L,          incnmaster,     {.i = -1} },
 	{ SUPER|SHIFT,              XKB_KEY_H,          incnmaster,     {.i = +1} },
-
+    // master width
 	{ SUPER,                    XKB_KEY_h,          setmfact,       {.f = -0.05} },
 	{ SUPER,                    XKB_KEY_l,          setmfact,       {.f = +0.05} },
-
+    // layout switching
     { CAPS,                    XKB_KEY_r,          cyclelayout,      {.i = +1} },
 	{ CAPS,                    XKB_KEY_f,          cyclelayout,      {.i = -1} },
     
-    // client
+    // change focused client 
 	{ SUPER,                    XKB_KEY_j,          focusstack,     {.i = +1} },
 	{ SUPER,                    XKB_KEY_k,          focusstack,     {.i = -1} },
+    
+    // move clients in stack
+    { SUPER|SHIFT,              XKB_KEY_J,          movestack,      {.i = +1} },
+    { SUPER|SHIFT,              XKB_KEY_K,          movestack,      {.i = -1} },
+
+    // client keys
+	{ SUPER,                    XKB_KEY_f,          togglefullscreen, {0} },
+	{ SUPER|SHIFT,              XKB_KEY_C,          killclient,     {0} },
+    { SUPER|SHIFT,              XKB_KEY_space,      togglefloating, {0} },
+    //{SUPER,                     XKB_KEY_t,          always on top
+	{ SUPER,                    XKB_KEY_s,          togglesticky,   {0} },
+    //{SUPER,                     XKB_KEY_m,          maximalize
+    
 
 
     // screen
