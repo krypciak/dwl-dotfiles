@@ -5,3 +5,4 @@ https://github.com/djpohly/dwl/wiki/unclutter
 https://github.com/djpohly/dwl/wiki/swallow
 https://github.com/djpohly/dwl/wiki/pertag
 https://github.com/djpohly/dwl/wiki/cyclelayouts
+https://github.com/djpohly/dwl/wiki/outputPowerManagement
