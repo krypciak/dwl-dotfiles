@@ -129,29 +129,22 @@ static const char *const pkill_at_exit[] = {
 static const Key keys[] = {
 	/* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
 	/* modifier                  key                 function        argument */
-	{ ALT,                      XKB_KEY_r,          spawn,          CMD("fuzzel", "--log-no-syslog") },
-	{ ALT,                      XKB_KEY_Return,     spawn,          CMD("alacritty") },
-	{ SUPER,                    XKB_KEY_j,          focusstack,     {.i = +1} },
-	{ SUPER,                    XKB_KEY_k,          focusstack,     {.i = -1} },
-	{ SUPER|SHIFT,              XKB_KEY_L,          incnmaster,     {.i = -1} },
-	{ SUPER|SHIFT,              XKB_KEY_H,          incnmaster,     {.i = +1} },
-	{ SUPER,                    XKB_KEY_h,          setmfact,       {.f = -0.05} },
-	{ SUPER,                    XKB_KEY_l,          setmfact,       {.f = +0.05} },
     { SUPER|CTRL,               XKB_KEY_Return,     zoom,           {0} },
 	{ SUPER|SHIFT,              XKB_KEY_C,          killclient,     {0} },
 	
-    { CAPS,                    XKB_KEY_r,          cyclelayout,      {.i = +1} },
-	{ CAPS,                    XKB_KEY_f,          cyclelayout,      {.i = -1} },
     //{ SUPER,                    XKB_KEY_space,      setlayout,      {0} },
 	
     { SUPER|SHIFT,              XKB_KEY_space,      togglefloating, {0} },
 	{ SUPER,                    XKB_KEY_m,          togglefullscreen, {0} },
 	{ SUPER,                    XKB_KEY_0,          view,           {.ui = ~0} },
 	{ SUPER|SHIFT,              XKB_KEY_parenright, tag,            {.ui = ~0} },
+    // monitor
 	{ SUPER,                    XKB_KEY_comma,      focusmon,       {.i = WLR_DIRECTION_LEFT} },
 	{ SUPER,                    XKB_KEY_period,     focusmon,       {.i = WLR_DIRECTION_RIGHT} },
 	{ SUPER|SHIFT,              XKB_KEY_less,       tagmon,         {.i = WLR_DIRECTION_LEFT} },
 	{ SUPER|SHIFT,              XKB_KEY_greater,    tagmon,         {.i = WLR_DIRECTION_RIGHT} },
+
+    // tags
 	TAGKEYS(                    XKB_KEY_Tab,        XKB_KEY_ISO_Left_Tab,    0),
 	TAGKEYS(                    XKB_KEY_q,          XKB_KEY_Q,      1),
 	TAGKEYS(                    XKB_KEY_w,          XKB_KEY_W,      2),
@@ -168,19 +161,53 @@ static const Key keys[] = {
     //{ CAPS,                     XKB_KEY_t,          group
     //{ CAPS,                     XKB_KEY_g,          index
     
+    // launcher
+	{ ALT,                      XKB_KEY_r,          spawn,          CMD("fuzzel", "--log-level=warning") },
+	{ ALT,                      XKB_KEY_Return,     spawn,          CMD("alacritty") },
+
+    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill steam") },
+    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill lbry") },
+    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill tutanota") },
+    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill gammastep") },
+    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill copyq") },
+    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill keepassxc") },
+    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill discord") },
+
+    // layout 
+	{ SUPER|SHIFT,              XKB_KEY_L,          incnmaster,     {.i = -1} },
+	{ SUPER|SHIFT,              XKB_KEY_H,          incnmaster,     {.i = +1} },
+
+	{ SUPER,                    XKB_KEY_h,          setmfact,       {.f = -0.05} },
+	{ SUPER,                    XKB_KEY_l,          setmfact,       {.f = +0.05} },
+
+    { CAPS,                    XKB_KEY_r,          cyclelayout,      {.i = +1} },
+	{ CAPS,                    XKB_KEY_f,          cyclelayout,      {.i = -1} },
+    
+    // client
+	{ SUPER,                    XKB_KEY_j,          focusstack,     {.i = +1} },
+	{ SUPER,                    XKB_KEY_k,          focusstack,     {.i = -1} },
+
+
     // screen
     // next screen
     // prev screen
     //{ CAPS,                     XKB_KEY_v,          spawn,          CMD("") },
 
-    // power keys
+    // power
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_P,          spawn,          CMD("loginctl", "poweroff") },
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_R,          spawn,          CMD("loginctl", "reboot") },
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_S,          spawn,          CMD("loginctl", "suspend") },
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_H,          spawn,          CMD("loginctl", "hibernate") },
+
+    // turn off screens
+	{ CAPS,                     XKB_KEY_v,          spawn,          CMD("@HOME/.config/dwl/dpms-off/target/release/dpms-off") },
+
+    // dwl
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_Q,          quit,           {0} },
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_N,          spawnwithvars,  CMD("alacritty", "-e", "@HOME/.config/dwl/dwl-dotfiles/scripts/makeandexit.sh") },
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_M,          restartdwl,     {0} },
+
+    // locking
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_L,          spawn,          CMD("", "") },
 
 #define CHVT(n) { CTRL|ALT,XKB_KEY_XF86Switch_VT_##n, chvt, {.ui = (n)} }
