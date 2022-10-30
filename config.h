@@ -29,9 +29,10 @@ static const char *tags[] = { "1", "2", "3" };
 static const Rule rules[] = {
 	/* app_id     title       tags mask     isfloating  isterm  noswallow  monitor */
 	/* examples:
-	{ "Gimp",     NULL,       0,            1,          0,      1,         -1 },
+	{ "Gimp",       NULL,       0,            1,          0,      1,         -1 },
 	*/
-	{ "firefox",  NULL,       1 << 8,       0,          0,      1,         -1 },
+    { "alacritty",  NULL,       0,            0,          1,      0,         -1 },
+    { "imv",        NULL,       0,            0,          0,      0,         -1 },
 };
 
 /* layout(s) */
@@ -39,7 +40,7 @@ static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },
 	{ "><>",      NULL },    /* no layout function means floating behavior */
-	{ "[M]",      monocle },
+	//{ "[M]",      monocle },
     { NULL,       NULL },
 };
 
@@ -164,13 +165,14 @@ static const Key keys[] = {
 	{ ALT,                      XKB_KEY_r,          spawn,          CMD("fuzzel", "--log-level=warning") },
 	{ ALT,                      XKB_KEY_Return,     spawn,          CMD("alacritty") },
 
-    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill steam") },
-    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill lbry") },
-    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill tutanota") },
-    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill gammastep") },
-    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill copyq") },
-    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill keepassxc") },
-    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill discord") },
+    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill", "steam") },
+    { SUPER|ALT,                XKB_KEY_v,          spawn,          CMD("pkill", "League") },
+    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill", "lbry") },
+    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill", "tutanota") },
+    { SUPER|ALT,                XKB_KEY_x,          spawn,          CMD("pkill", "gammastep") },
+    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill", "copyq") },
+    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill", "keepassxc") },
+    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill", "discord") },
 
     // layout 
     // master count
