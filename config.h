@@ -113,7 +113,7 @@ static char *autostart[] = {
 };
 
 static const char *const pkill_at_exit[] = {
-    "copyq", "gammastep"
+    "gammastep", "copyq"
 };
 
 /* If you want to use the windows key change this to WLR_MODIFIER_LOGO */
@@ -153,6 +153,11 @@ static const Key keys[] = {
     { CAPS,                     XKB_KEY_e,          spawn,          CMD("amixer", "set", "Master", "5%+") },
     { CAPS,                     XKB_KEY_d,          spawn,          CMD("amixer", "set", "Master", "5%-") },
 
+    { CAPS|SHIFT,               XKB_KEY_E,          spawn,          CMD("amixer", "set", "Capture", "5%+") },
+    { CAPS|SHIFT,               XKB_KEY_D,          spawn,          CMD("amixer", "set", "Capture", "5%-") },
+    { CAPS|CTRL,                XKB_KEY_e,          spawn,          CMD("amixer", "set", "Capture", "cap") },
+    { CAPS|CTRL,                XKB_KEY_d,          spawn,          CMD("amixer", "set", "Capture", "nocap") },
+
     // gaps
     { CAPS,                     XKB_KEY_y,          incgaps,        {.i = +1} },
     { CAPS,                     XKB_KEY_h,          incgaps,        {.i = -1} },
@@ -167,12 +172,12 @@ static const Key keys[] = {
 
     { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill", "steam") },
     { SUPER|ALT,                XKB_KEY_v,          spawn,          CMD("pkill", "League") },
-    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill", "lbry") },
-    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill", "tutanota") },
-    { SUPER|ALT,                XKB_KEY_x,          spawn,          CMD("pkill", "gammastep") },
-    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill", "copyq") },
-    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill", "keepassxc") },
-    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill", "discord") },
+    { SUPER|ALT,                XKB_KEY_y,          spawn,          CMD("pkill", "lbry") },
+    { SUPER|ALT,                XKB_KEY_z,          spawn,          CMD("pkill", "tutanota") },
+    { SUPER|ALT,                XKB_KEY_u,          spawn,          CMD("pkill", "gammastep") },
+    { SUPER|ALT,                XKB_KEY_c,          spawn,          CMD("pkill", "copyq") },
+    { SUPER|ALT,                XKB_KEY_k,          spawn,          CMD("pkill", "keepassxc") },
+    { SUPER|ALT,                XKB_KEY_d,          spawn,          CMD("pkill", "discord") },
 
     // layout 
     // master count
@@ -215,7 +220,7 @@ static const Key keys[] = {
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_H,          spawn,          CMD("loginctl", "hibernate") },
 
     // turn off screens
-	{ CAPS,                     XKB_KEY_v,          spawn,          CMD("@HOME/.config/dwl/dpms-off/target/release/dpms-off") },
+	{ CAPS,                     XKB_KEY_v,          spawnwithvars,  CMD("@HOME/.config/dwl/dpms-off/target/release/dpms-off") },
 
     // dwl
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_Q,          quit,           {0} },
