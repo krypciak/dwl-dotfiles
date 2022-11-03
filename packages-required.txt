@@ -2,3 +2,4 @@ swaybg
 gammastep 
 inotify-tools
 fuzzel
+cliphist

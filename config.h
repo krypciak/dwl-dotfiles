@@ -107,13 +107,13 @@ static const int cursor_timeout = 2;
 static char *autostart[] = {
         "gammastep", "-r", NULL,
         "swaybg", "--mode", "center", "--image", "@HOME/.config/awesome/theme/wallpapers/oneshot/factory.png", NULL,
-        "copyq", NULL,
+        "wl-paste", "--watch", "cliphist", "store", NULL,
         "pulseaudio", "--start", NULL,
         NULL /* terminate */
 };
 
 static const char *const pkill_at_exit[] = {
-    "gammastep", "copyq"
+    "gammastep", 
 };
 
 /* If you want to use the windows key change this to WLR_MODIFIER_LOGO */
@@ -126,6 +126,8 @@ static const char *const pkill_at_exit[] = {
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 //#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 #define CMD(...) { .v = (const char*[]){ __VA_ARGS__, NULL } }
+#define SCMD(cmd) { .v = (const char*[]){ "sh", "-c", "''" cmd "''", NULL } }
+
 
 static const Key keys[] = {
 	/* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
@@ -158,6 +160,7 @@ static const Key keys[] = {
     { CAPS|CTRL,                XKB_KEY_e,          spawn,          CMD("amixer", "set", "Capture", "cap") },
     { CAPS|CTRL,                XKB_KEY_d,          spawn,          CMD("amixer", "set", "Capture", "nocap") },
 
+
     // gaps
     { CAPS,                     XKB_KEY_y,          incgaps,        {.i = +1} },
     { CAPS,                     XKB_KEY_h,          incgaps,        {.i = -1} },
@@ -169,13 +172,14 @@ static const Key keys[] = {
     // launcher
 	{ ALT,                      XKB_KEY_r,          spawn,          CMD("fuzzel", "--log-level=warning") },
 	{ ALT,                      XKB_KEY_Return,     spawn,          CMD("alacritty") },
+    { SUPER,                    XKB_KEY_c,          spawn,          SCMD("cliphist list | fuzzel -d --log-level=none | cliphist decode | wl-copy") },
 
     { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill", "steam") },
     { SUPER|ALT,                XKB_KEY_v,          spawn,          CMD("pkill", "League") },
     { SUPER|ALT,                XKB_KEY_y,          spawn,          CMD("pkill", "lbry") },
     { SUPER|ALT,                XKB_KEY_z,          spawn,          CMD("pkill", "tutanota") },
     { SUPER|ALT,                XKB_KEY_u,          spawn,          CMD("pkill", "gammastep") },
-    { SUPER|ALT,                XKB_KEY_c,          spawn,          CMD("pkill", "copyq") },
+    //{ SUPER|ALT,                XKB_KEY_c,          spawn,          CMD("pkill", "copyq") },
     { SUPER|ALT,                XKB_KEY_k,          spawn,          CMD("pkill", "keepassxc") },
     { SUPER|ALT,                XKB_KEY_d,          spawn,          CMD("pkill", "discord") },
 
