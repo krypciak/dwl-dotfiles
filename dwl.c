@@ -308,6 +308,7 @@ static void setup(void);
 static void sigchld(int unused);
 static void spawn(const Arg *arg);
 static void spawnwithvars(const Arg *arg);
+static void simplespawn(const Arg *arg);
 static void startdrag(struct wl_listener *listener, void *data);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
@@ -379,7 +380,7 @@ static Monitor *selmon;
 
 static int enablegaps = 1;   /* enables gaps, used by togglegaps */
 
-static const char* userhome;
+static char* userhome;
 
 /* global event handlers */
 static struct wl_listener cursor_axis = {.notify = axisnotify};
@@ -2723,6 +2724,34 @@ spawnwithvars(const Arg *arg)
 		die("dwl: execvp %s failed:", arr[0]);
 	}
 }
+
+void 
+simplespawn(const Arg *arg) 
+{
+    char *cmd;
+    char *tmp1;
+
+    cmd = (char *)arg->v;
+    // function in util.c
+    cmd = str_replace(cmd, "@HOME", userhome);
+
+    tmp1 = malloc(strlen(cmd)+6);
+    tmp1[0] = '\0';
+    strcat(tmp1, "''");
+    strcat(tmp1, cmd);
+    strcat(tmp1, "''");
+
+	if (fork() == 0) {
+		dup2(STDERR_FILENO, STDOUT_FILENO);
+		setsid();
+		execvp("sh", (char*[]) { "sh", "-c", tmp1, NULL });
+		die("dwl: simplespawn() execvp sh failed:");
+	}
+    free(cmd);
+    free(tmp1);
+}
+
+
 
 void
 startdrag(struct wl_listener *listener, void *data)
