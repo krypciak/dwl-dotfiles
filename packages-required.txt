@@ -3,3 +3,4 @@ gammastep
 inotify-tools
 fuzzel
 cliphist
+swaylock
