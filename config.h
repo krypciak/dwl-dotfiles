@@ -167,8 +167,8 @@ static const Key keys[] = {
     { CAPS,                     XKB_KEY_h,          incgaps,        {.i = -1} },
 
     // walpaper
-    //{ CAPS,                     XKB_KEY_t,          group
-    //{ CAPS,                     XKB_KEY_g,          index
+    { CAPS,                     XKB_KEY_t,          simplespawn,    {.v = WALLPAPER_SCRIPT "1 0" } },
+    { CAPS,                     XKB_KEY_g,          simplespawn,    {.v = WALLPAPER_SCRIPT "0 1" } },
     
     // launcher
 	{ ALT,                      XKB_KEY_r,          spawn,          CMD("fuzzel", "--log-level=warning") },
@@ -183,7 +183,6 @@ static const Key keys[] = {
     { SUPER|ALT,                XKB_KEY_y,          spawn,          CMD("pkill", "lbry") },
     { SUPER|ALT,                XKB_KEY_z,          spawn,          CMD("pkill", "tutanota") },
     { SUPER|ALT,                XKB_KEY_u,          spawn,          CMD("pkill", "gammastep") },
-    //{ SUPER|ALT,                XKB_KEY_c,          spawn,          CMD("pkill", "copyq") },
     { SUPER|ALT,                XKB_KEY_k,          spawn,          CMD("pkill", "keepassxc") },
     { SUPER|ALT,                XKB_KEY_d,          spawn,          CMD("pkill", "discord") },
 
