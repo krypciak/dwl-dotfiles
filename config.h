@@ -103,13 +103,14 @@ static const enum libinput_config_accel_profile accel_profile = LIBINPUT_CONFIG_
 static const double accel_speed = 0.0;
 static const int cursor_timeout = 2;
 
+#define WALLPAPER_SCRIPT "luajit @HOME/.config/dotfiles/scripts/wallpaper-wayland.lua "
+
 /* Autostart */
 static char *autostart[] = {
-        "gammastep", "-r", NULL,
-        "swaybg", "--mode", "center", "--image", "@HOME/.config/awesome/theme/wallpapers/oneshot/factory.png", NULL,
-        "wl-paste", "--watch", "cliphist", "store", NULL,
-        "pulseaudio", "--start", NULL,
-        NULL /* terminate */
+        "gammastep -r",
+        WALLPAPER_SCRIPT "0 0",
+        "wl-paste --watch cliphist store",
+        "pulseaudio --start",
 };
 
 static const char *const pkill_at_exit[] = {
