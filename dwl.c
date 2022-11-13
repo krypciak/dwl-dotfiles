@@ -1204,6 +1204,7 @@ cyclelayout(const Arg *arg)
 	}
 }
 
+__attribute__((unused))
 void
 defaultgaps(const Arg *arg)
 {
@@ -1501,6 +1502,7 @@ incgaps(const Arg *arg)
 	);
 }
 
+__attribute__((unused))
 void
 incigaps(const Arg *arg)
 {
@@ -1512,6 +1514,7 @@ incigaps(const Arg *arg)
 	);
 }
 
+__attribute__((unused))
 void
 incihgaps(const Arg *arg)
 {
@@ -1523,6 +1526,7 @@ incihgaps(const Arg *arg)
 	);
 }
 
+__attribute__((unused))
 void
 incivgaps(const Arg *arg)
 {
@@ -1534,6 +1538,7 @@ incivgaps(const Arg *arg)
 	);
 }
 
+__attribute__((unused))
 void
 incogaps(const Arg *arg)
 {
@@ -1545,6 +1550,7 @@ incogaps(const Arg *arg)
 	);
 }
 
+__attribute__((unused))
 void
 incohgaps(const Arg *arg)
 {
@@ -1556,6 +1562,7 @@ incohgaps(const Arg *arg)
 	);
 }
 
+__attribute__((unused))
 void
 incovgaps(const Arg *arg)
 {
@@ -1726,7 +1733,7 @@ mapnotify(struct wl_listener *listener, void *data)
 		return;
 	}
 #endif
-
+    
 	for (i = 0; i < 4; i++) {
 		c->border[i] = wlr_scene_rect_create(c->scene, 0, 0, bordercolor);
 		c->border[i]->node.data = c;
@@ -1775,6 +1782,7 @@ mapnotify(struct wl_listener *listener, void *data)
 	}
 }
 
+__attribute__((unused))
 void
 monocle(Monitor *m)
 {
@@ -2783,6 +2791,7 @@ togglefullscreen(const Arg *arg)
 		setfullscreen(sel, !sel->isfullscreen);
 }
 
+__attribute__((unused))
 void
 togglegaps(const Arg *arg)
 {
