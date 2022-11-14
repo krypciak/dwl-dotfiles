@@ -6,16 +6,6 @@
 
 #include "util.h"
 
-void *
-ecalloc(size_t nmemb, size_t size)
-{
-	void *p;
-
-	if (!(p = calloc(nmemb, size)))
-		die("calloc:");
-	return p;
-}
-
 void
 die(const char *fmt, ...) {
 	va_list ap;
@@ -33,6 +23,17 @@ die(const char *fmt, ...) {
 
 	exit(1);
 }
+
+void *
+ecalloc(size_t nmemb, size_t size)
+{
+	void *p;
+
+	if (!(p = calloc(nmemb, size)))
+		die("calloc:");
+	return p;
+}
+
 
 /* used by simplespawn */
 //https://stackoverflow.com/questions/779875/what-function-is-to-replace-a-substring-from-a-string-in-c
