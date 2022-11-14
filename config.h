@@ -103,7 +103,7 @@ static const enum libinput_config_accel_profile accel_profile = LIBINPUT_CONFIG_
 static const double accel_speed = 0.0;
 static const int cursor_timeout = 2;
 
-#define WALLPAPER_SCRIPT "luajit @HOME/.config/dotfiles/scripts/wallpaper-wayland.lua "
+#define WALLPAPER_SCRIPT "luajit @HOME/.config/dotfiles/scripts/wallpaper.lua "
 
 /* Autostart */
 static char *autostart[] = {
