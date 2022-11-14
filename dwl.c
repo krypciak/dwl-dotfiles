@@ -2223,14 +2223,14 @@ resize(Client *c, struct wlr_box geo, int interact)
 void
 run(char *startup_cmd)
 {
-    /* Set your vars here, used by simplespawn */
-    userhome = getenv("HOME");
-
 	/* Add a Unix socket to the Wayland display. */
 	const char *socket = wl_display_add_socket_auto(dpy);
 	if (!socket)
 		die("startup: display_add_socket_auto");
 	setenv("WAYLAND_DISPLAY", socket, 1);
+
+    /* Set your vars here, used by simplespawn */
+    userhome = getenv("HOME");
 
 	/* Start the backend. This will enumerate outputs and inputs, become the DRM
 	 * master, etc */
