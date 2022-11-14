@@ -380,9 +380,6 @@ static Monitor *selmon;
 
 static int enablegaps = 1;   /* enables gaps, used by togglegaps */
 
-/* Define your vars here, used by simplespawn*/
-static char* userhome;
-
 /* global event handlers */
 static struct wl_listener cursor_axis = {.notify = axisnotify};
 static struct wl_listener cursor_button = {.notify = buttonpress};
@@ -2229,9 +2226,6 @@ run(char *startup_cmd)
 		die("startup: display_add_socket_auto");
 	setenv("WAYLAND_DISPLAY", socket, 1);
 
-    /* Set your vars here, used by simplespawn */
-    userhome = getenv("HOME");
-
 	/* Start the backend. This will enumerate outputs and inputs, become the DRM
 	 * master, etc */
 	if (!wlr_backend_start(backend))
@@ -2673,8 +2667,6 @@ simplespawn(const Arg *arg)
     char *tmp1;
 
     cmd = (char *)arg->v;
-    // function in util.c
-    cmd = str_replace(cmd, "@HOME", userhome);
 
     tmp1 = malloc(strlen(cmd)+6);
     tmp1[0] = '\0';
@@ -2688,7 +2680,6 @@ simplespawn(const Arg *arg)
 		execvp("sh", (char*[]) { "sh", "-c", tmp1, NULL });
 		die("dwl: simplespawn() execvp sh failed:");
 	}
-    free(cmd);
     free(tmp1);
 }
 

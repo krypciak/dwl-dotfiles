@@ -103,7 +103,7 @@ static const enum libinput_config_accel_profile accel_profile = LIBINPUT_CONFIG_
 static const double accel_speed = 0.0;
 static const int cursor_timeout = 2;
 
-#define WALLPAPER_SCRIPT "luajit @HOME/.config/dotfiles/scripts/wallpaper.lua "
+#define WALLPAPER_SCRIPT "luajit $HOME/.config/dotfiles/scripts/wallpaper.lua "
 
 /* Autostart */
 static char *autostart[] = {
@@ -171,7 +171,7 @@ static const Key keys[] = {
     // clipboard history view
     { SUPER,                    XKB_KEY_c,          simplespawn,    {.v = "cliphist list | fuzzel -d --log-level=none | cliphist decode | wl-copy" } },
     // clear the clipboard history
-    { SUPER|ALT,                XKB_KEY_c,          simplespawn,    {.v = "rm @HOME/.cache/cliphist/db" } },
+    { SUPER|ALT,                XKB_KEY_c,          simplespawn,    {.v = "rm $HOME/.cache/cliphist/db" } },
 
     { SUPER|ALT,                XKB_KEY_s,          simplespawn,    {.v = "pkill steam" } },
     { SUPER|ALT,                XKB_KEY_v,          simplespawn,    {.v = "pkill League" } },
@@ -221,17 +221,18 @@ static const Key keys[] = {
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_S,          simplespawn,    {.v = "playerctl pause -a; loginctl suspend && swaylock" } },
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_H,          simplespawn,    {.v = "loginctl hibernate" } },
 
+
     // turn off screens
-	{ CAPS,                     XKB_KEY_v,          simplespawn,    {.v = "@HOME/.config/dwl/dpms-off/target/release/dpms-off" } },
+	{ CAPS,                     XKB_KEY_v,          simplespawn,    {.v = "$HOME/.config/dwl/dpms-off/target/release/dpms-off" } },
 
     // dwl
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_Q,          quit,           {0} },
-	{ SUPER|CTRL|SHIFT,         XKB_KEY_N,          simplespawn,    {.v = "alacritty -e @HOME/.config/dwl/dwl-dotfiles/scripts/makeandexit.sh" } },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_N,          simplespawn,    {.v = "alacritty -e $HOME/.config/dwl/dwl-dotfiles/scripts/makeandexit.sh" } },
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_M,          restartdwl,     {0} },
 
     // locking
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_L,          simplespawn,    {.v = "playerctl pause -a; swaylock" } },
-	{ SUPER|CTRL|SHIFT,         XKB_KEY_K,          simplespawn,    {.v = "playerctl pause -a; @HOME/.config/dwl/dpms-off/target/release/dpms-off && swaylock" } },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_K,          simplespawn,    {.v = "playerctl pause -a; $HOME/.config/dwl/dpms-off/target/release/dpms-off && swaylock" } },
 
 
 #define CHVT(n) { CTRL|ALT,XKB_KEY_XF86Switch_VT_##n, chvt, {.ui = (n)} }
