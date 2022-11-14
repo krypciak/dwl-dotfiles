@@ -34,6 +34,7 @@ die(const char *fmt, ...) {
 	exit(1);
 }
 
+/* used by simplespawn */
 //https://stackoverflow.com/questions/779875/what-function-is-to-replace-a-substring-from-a-string-in-c
 // You must free the result if result is non-NULL.
 char *str_replace(char *orig, char *rep, char *with) {

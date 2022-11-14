@@ -379,6 +379,7 @@ static Monitor *selmon;
 
 static int enablegaps = 1;   /* enables gaps, used by togglegaps */
 
+/* Define your vars here, used by simplespawn*/
 static char* userhome;
 
 /* global event handlers */
@@ -471,8 +472,6 @@ autostartexec(void)
 {
 	size_t i = 0;
 
-    userhome = getenv("HOME");
-    
     for(i = 0; i < LENGTH(autostart); i++) {
         const Arg arg = {.v = autostart[i] };
         simplespawn(&arg);
@@ -2224,6 +2223,9 @@ resize(Client *c, struct wlr_box geo, int interact)
 void
 run(char *startup_cmd)
 {
+    /* Set your vars here, used by simplespawn */
+    userhome = getenv("HOME");
+
 	/* Add a Unix socket to the Wayland display. */
 	const char *socket = wl_display_add_socket_auto(dpy);
 	if (!socket)
