@@ -2652,6 +2652,7 @@ sigchld(int unused)
 	}
 }
 
+__attribute__((unused))
 void
 spawn(const Arg *arg)
 {

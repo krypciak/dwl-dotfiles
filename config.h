@@ -124,11 +124,6 @@ static const char *const pkill_at_exit[] = {
 	{ ALT|SHIFT,          SKEY,           tag,             {.ui = 1 << TAG} }, \
 	{ ALT|CTRL|SHIFT,     SKEY,           toggletag,       {.ui = 1 << TAG} }
 
-/* helper for spawning shell commands in the pre dwm-5.0 fashion */
-//#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
-#define CMD(...) { .v = (const char*[]){ __VA_ARGS__, NULL } }
-#define SCMD(cmd) { .v = (const char*[]){ "sh", "-c", "''" cmd "''", NULL } }
-
 
 static const Key keys[] = {
 	/* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
@@ -153,13 +148,13 @@ static const Key keys[] = {
 
 
     // media
-    { CAPS,                     XKB_KEY_e,          spawn,          CMD("amixer", "set", "Master", "5%+") },
-    { CAPS,                     XKB_KEY_d,          spawn,          CMD("amixer", "set", "Master", "5%-") },
+    { CAPS,                     XKB_KEY_e,          simplespawn,    {.v = "amixer set Master 5%+" } },
+    { CAPS,                     XKB_KEY_d,          simplespawn,    {.v = "amixer set Master 5%-" } },
 
-    { CAPS|SHIFT,               XKB_KEY_E,          spawn,          CMD("amixer", "set", "Capture", "5%+") },
-    { CAPS|SHIFT,               XKB_KEY_D,          spawn,          CMD("amixer", "set", "Capture", "5%-") },
-    { CAPS|CTRL,                XKB_KEY_e,          spawn,          CMD("amixer", "set", "Capture", "cap") },
-    { CAPS|CTRL,                XKB_KEY_d,          spawn,          CMD("amixer", "set", "Capture", "nocap") },
+    { CAPS|SHIFT,               XKB_KEY_E,          simplespawn,    {.v = "amixer set Capture 5%+" } },
+    { CAPS|SHIFT,               XKB_KEY_D,          simplespawn,    {.v = "amixer set Capture 5%-" } },
+    { CAPS|CTRL,                XKB_KEY_e,          simplespawn,    {.v = "amixer set Capture cap" } },
+    { CAPS|CTRL,                XKB_KEY_d,          simplespawn,    {.v = "amixer set Capture nocap" } },
 
 
     // gaps
@@ -171,20 +166,20 @@ static const Key keys[] = {
     { CAPS,                     XKB_KEY_g,          simplespawn,    {.v = WALLPAPER_SCRIPT "0 1" } },
     
     // launcher
-	{ ALT,                      XKB_KEY_r,          spawn,          CMD("fuzzel", "--log-level=warning") },
-	{ ALT,                      XKB_KEY_Return,     spawn,          CMD("alacritty") },
+	{ ALT,                      XKB_KEY_r,          simplespawn,    {.v = "fuzzel --log-level=warning" } },
+	{ ALT,                      XKB_KEY_Return,     simplespawn,    {.v = "alacritty" } },
     // clipboard history view
-    { SUPER,                    XKB_KEY_c,          spawn,          SCMD("cliphist list | fuzzel -d --log-level=none | cliphist decode | wl-copy") },
+    { SUPER,                    XKB_KEY_c,          simplespawn,    {.v = "cliphist list | fuzzel -d --log-level=none | cliphist decode | wl-copy" } },
     // clear the clipboard history
     { SUPER|ALT,                XKB_KEY_c,          simplespawn,    {.v = "rm @HOME/.cache/cliphist/db" } },
 
-    { SUPER|ALT,                XKB_KEY_s,          spawn,          CMD("pkill", "steam") },
-    { SUPER|ALT,                XKB_KEY_v,          spawn,          CMD("pkill", "League") },
-    { SUPER|ALT,                XKB_KEY_y,          spawn,          CMD("pkill", "lbry") },
-    { SUPER|ALT,                XKB_KEY_z,          spawn,          CMD("pkill", "tutanota") },
-    { SUPER|ALT,                XKB_KEY_u,          spawn,          CMD("pkill", "gammastep") },
-    { SUPER|ALT,                XKB_KEY_k,          spawn,          CMD("pkill", "keepassxc") },
-    { SUPER|ALT,                XKB_KEY_d,          spawn,          CMD("pkill", "discord") },
+    { SUPER|ALT,                XKB_KEY_s,          simplespawn,    {.v = "pkill steam" } },
+    { SUPER|ALT,                XKB_KEY_v,          simplespawn,    {.v = "pkill League" } },
+    { SUPER|ALT,                XKB_KEY_y,          simplespawn,    {.v = "pkill lbry" } },
+    { SUPER|ALT,                XKB_KEY_z,          simplespawn,    {.v = "pkill tutanota" } },
+    { SUPER|ALT,                XKB_KEY_u,          simplespawn,    {.v = "pkill gammastep" } },
+    { SUPER|ALT,                XKB_KEY_k,          simplespawn,    {.v = "pkill keepassxc" } },
+    { SUPER|ALT,                XKB_KEY_d,          simplespawn,    {.v = "pkill discord" } },
 
     // layout 
     // master count
@@ -194,8 +189,8 @@ static const Key keys[] = {
 	{ SUPER,                    XKB_KEY_h,          setmfact,       {.f = -0.05} },
 	{ SUPER,                    XKB_KEY_l,          setmfact,       {.f = +0.05} },
     // layout switching
-    { CAPS,                    XKB_KEY_r,           cyclelayout,      {.i = +1} },
-	{ CAPS,                    XKB_KEY_f,           cyclelayout,      {.i = -1} },
+    { CAPS,                    XKB_KEY_r,           cyclelayout,    {.i = +1} },
+	{ CAPS,                    XKB_KEY_f,           cyclelayout,    {.i = -1} },
     
     // change focused client 
 	{ SUPER,                    XKB_KEY_j,          focusstack,     {.i = +1} },
@@ -218,13 +213,13 @@ static const Key keys[] = {
     // screen
     // next screen
     // prev screen
-    //{ CAPS,                     XKB_KEY_v,          spawn,          CMD("") },
+    //{ CAPS,                     XKB_KEY_v,          
 
     // power
-	{ SUPER|CTRL|SHIFT,         XKB_KEY_P,          spawn,          CMD("loginctl", "poweroff") },
-	{ SUPER|CTRL|SHIFT,         XKB_KEY_R,          spawn,          CMD("loginctl", "reboot") },
-	{ SUPER|CTRL|SHIFT,         XKB_KEY_S,          simplespawn,    {.v = "playerctl pause -a; loginctl suspend && swaylock"} },
-	{ SUPER|CTRL|SHIFT,         XKB_KEY_H,          spawn,          CMD("loginctl", "hibernate") },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_P,          simplespawn,    {.v = "loginctl poweroff" } },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_R,          simplespawn,    {.v = "loginctl reboot" } },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_S,          simplespawn,    {.v = "playerctl pause -a; loginctl suspend && swaylock" } },
+	{ SUPER|CTRL|SHIFT,         XKB_KEY_H,          simplespawn,    {.v = "loginctl hibernate" } },
 
     // turn off screens
 	{ CAPS,                     XKB_KEY_v,          simplespawn,    {.v = "@HOME/.config/dwl/dpms-off/target/release/dpms-off" } },
