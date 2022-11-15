@@ -108,6 +108,7 @@ static const int cursor_timeout = 2;
 /* Autostart */
 static char *autostart[] = {
         "gammastep -r",
+        "swww init",
         WALLPAPER_SCRIPT "0 0",
         "wl-paste --watch cliphist store",
         "pulseaudio --start",

@@ -1,9 +1,9 @@
 wlroots
 wayland-protocols
 wayland-scanner
-swaybg 
 gammastep 
 inotify-tools
 fuzzel
 cliphist
 swaylock
+swww
