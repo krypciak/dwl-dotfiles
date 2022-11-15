@@ -1,3 +1,5 @@
+wlroots
+wayland-protocols
 swaybg 
 gammastep 
 inotify-tools
