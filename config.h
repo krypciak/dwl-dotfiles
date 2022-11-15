@@ -125,10 +125,12 @@ static const char *const pkill_at_exit[] = {
 	{ ALT|SHIFT,          SKEY,           tag,             {.ui = 1 << TAG} }, \
 	{ ALT|CTRL|SHIFT,     SKEY,           toggletag,       {.ui = 1 << TAG} }
 
+
+
 #define PLAYERCTL_SCRIPT "luajit $HOME/.config/dotfiles/scripts/playerctl.lua "
 #define PLAYERCTL_KEY(KEY,SHIFT_KEY,ACTION) \
-	{ CAPS,                    KEY,                 simplespawn,     {.v = PLAYERCTL_SCRIPT ACTION " 1"} }, \
-	{ CAPS|SHIFT,              SHIFT_KEY,           simplespawn,     {.v = PLAYERCTL_SCRIPT ACTION " 2"} }
+	{ CAPS,                    KEY,                 simplespawn,     {.v = PLAYERCTL_SCRIPT "\"" ACTION "\" 1"} }, \
+	{ CAPS|SHIFT,              SHIFT_KEY,           simplespawn,     {.v = PLAYERCTL_SCRIPT "\"" ACTION "\" 2"} }
 
 static const Key keys[] = {
 	/* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
@@ -156,8 +158,11 @@ static const Key keys[] = {
     PLAYERCTL_KEY(XKB_KEY_Tab, XKB_KEY_ISO_Left_Tab, "play-pause"),
     PLAYERCTL_KEY(XKB_KEY_q,   XKB_KEY_Q,            "next"),
     PLAYERCTL_KEY(XKB_KEY_a,   XKB_KEY_A,            "previous"),
-    PLAYERCTL_KEY(XKB_KEY_w,   XKB_KEY_W,            "volume 0.02+"),
+    PLAYERCTL_KEY(XKB_KEY_w,   XKB_KEY_W,            "volume 0.02%+"),
     PLAYERCTL_KEY(XKB_KEY_s,   XKB_KEY_S,            "volume 0.02%-"), 
+	
+    { CAPS|CTRL,                XKB_KEY_Tab,        simplespawn,     {.v = PLAYERCTL_SCRIPT "swap -1"} },
+
 
     { CAPS,                     XKB_KEY_e,          simplespawn,    {.v = "amixer set Master 5%+" } },
     { CAPS,                     XKB_KEY_d,          simplespawn,    {.v = "amixer set Master 5%-" } },
