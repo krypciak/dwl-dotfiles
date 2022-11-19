@@ -8,3 +8,4 @@ https://github.com/djpohly/dwl/wiki/cyclelayouts
 https://github.com/djpohly/dwl/wiki/outputPowerManagement
 https://github.com/djpohly/dwl/wiki/movestack
 https://github.com/djpohly/dwl/wiki/sticky
+https://github.com/djpohly/dwl/wiki/smartborders
