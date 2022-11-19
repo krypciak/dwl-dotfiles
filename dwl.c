@@ -289,6 +289,7 @@ static void printstatus(void);
 static void powermgrsetmodenotify(struct wl_listener *listener, void *data);
 static void quit(const Arg *arg);
 static void quitsignal(int signo);
+static void *quitthread(void *var);
 static void restartdwl(const Arg *arg);
 static void rendermon(struct wl_listener *listener, void *data);
 static void requeststartdrag(struct wl_listener *listener, void *data);
@@ -308,6 +309,7 @@ static void setup(void);
 static void sigchld(int unused);
 static void spawn(const Arg *arg);
 static void simplespawn(const Arg *arg);
+static int  simplespawnstring(const char *cmd);
 static void startdrag(struct wl_listener *listener, void *data);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
@@ -434,9 +436,6 @@ struct Pertag {
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 
-static pid_t *autostart_pids;
-static size_t autostart_len;
-
 /* function implementations */
 void
 applybounds(Client *c, struct wlr_box *bbox)
@@ -465,15 +464,37 @@ applybounds(Client *c, struct wlr_box *bbox)
 		c->geom.y = bbox->y;
 }
 
+#define async_sleep_simplespawn_array(SECONDS,ARRAY) \
+    { \
+        void *thread_func(void *data) { \
+            sleep(SECONDS); \
+            for(int ite = 0; ite < LENGTH(ARRAY); ite++) { \
+                simplespawnstring(ARRAY[ite]); \
+            } \
+            return NULL; \
+        } \
+        pthread_t wait_thread; \
+        pthread_create(&wait_thread, NULL, thread_func, NULL); \
+    }
+
+#define async_sleep_execute_array(SECONDS,ARRAY) \
+    { \
+        void *thread_func(void *data) { \
+            sleep(SECONDS); \
+            for(int ite = 0; ite < LENGTH(ARRAY); ite++) { \
+                system(ARRAY[ite]); \
+            } \
+            return NULL; \
+        } \
+        pthread_t wait_thread; \
+        pthread_create(&wait_thread, NULL, thread_func, NULL); \
+    }
+
 void
 autostartexec(void)
 {
-	size_t i = 0;
-
-    for(i = 0; i < LENGTH(autostart); i++) {
-        const Arg arg = {.v = autostart[i] };
-        simplespawn(&arg);
-    }
+    async_sleep_simplespawn_array(0, autostart_simplespawn);
+    async_sleep_execute_array(0, autostart_execute);
 }
 
 void
@@ -2114,24 +2135,9 @@ powermgrsetmodenotify(struct wl_listener *listener, void *data)
 void
 quit(const Arg *arg)
 {
-	size_t i;
-
-	/* kill child processes */
-	for (i = 0; i < autostart_len; i++) {
-		if (0 < autostart_pids[i]) {
-			kill(autostart_pids[i], SIGTERM);
-            //waitpid(autostart_pids[i], NULL, 0);
-		}
-	}
-    
-
-    for(i = 0; i < sizeof(pkill_at_exit) / sizeof(pkill_at_exit[0]); i++) {
-        char *cmd = malloc(strlen("pkill ")+strlen(pkill_at_exit[i]) + 2);
-        sprintf(cmd, "pkill %s", pkill_at_exit[i]);
-        system(cmd);
-    }
-    
-	wl_display_terminate(dpy);
+    // create a thread that closes all apps then exit, but stay responsive
+    pthread_t thread_id;
+    pthread_create(&thread_id, NULL, quitthread, NULL);
 }
 
 void
@@ -2140,7 +2146,27 @@ quitsignal(int signo)
 	quit(NULL);
 }
 
-void restartdwl(const Arg *arg) {
+void
+*quitthread(void *var)
+{
+	size_t i;
+    const int len = LENGTH(at_exit);
+    int pids[len];
+    
+    for(i = 0; i < len; i++) {
+        pids[i] = simplespawnstring(at_exit[i]);
+    }
+    
+    for(i = 0; i < len; i++) {
+        waitpid(pids[i], NULL, 0);
+    }
+	wl_display_terminate(dpy);
+    return NULL;
+}
+
+void 
+restartdwl(const Arg *arg) 
+{
     FILE *fp;
     fp = fopen ("/tmp/restart_dwl", "w");
     fclose(fp);
@@ -2231,8 +2257,6 @@ run(char *startup_cmd)
 	if (!wlr_backend_start(backend))
 		die("startup: backend_start");
 
-	/* Now that the socket exists and the backend is started, run the startup command */
-	autostartexec();
 	if (startup_cmd) {
 		int piperw[2];
 		if (pipe(piperw) < 0)
@@ -2263,9 +2287,13 @@ run(char *startup_cmd)
 	 * initialized, as the image/coordinates are not transformed for the
 	 * monitor when displayed here */
 	wlr_cursor_warp_closest(cursor, NULL, cursor->x, cursor->y);
-	
+
+	autostartexec();
+
     wlr_xcursor_manager_set_cursor_image(cursor_mgr, "left_ptr", cursor);
 	handlecursoractivity(false);
+
+
 
 	/* Run the Wayland event loop. This does not return until you exit the
 	 * compositor. Starting the backend rigged up all of the necessary event
@@ -2632,19 +2660,8 @@ sigchld(int unused)
 	if (signal(SIGCHLD, sigchld) == SIG_ERR)
 		die("can't install SIGCHLD handler:");
 	while (0 < (pid = waitpid(-1, NULL, WNOHANG))) {
-		pid_t *p, *lim;
 		if (pid == child_pid)
 			child_pid = -1;
-		if (!(p = autostart_pids))
-			continue;
-		lim = &p[autostart_len];
-
-		for (; p < lim; p++) {
-			if (*p == pid) {
-				*p = -1;
-				break;
-			}
-		}
 	}
 }
 
@@ -2660,13 +2677,16 @@ spawn(const Arg *arg)
 	}
 }
 
-void 
-simplespawn(const Arg *arg) 
-{
-    char *cmd;
-    char *tmp1;
+void
+simplespawn(const Arg *arg) {
+    simplespawnstring(arg->v);
+}
 
-    cmd = (char *)arg->v;
+int
+simplespawnstring(const char *cmd) 
+{
+    char *tmp1;
+    int pid;
 
     tmp1 = malloc(strlen(cmd)+6);
     tmp1[0] = '\0';
@@ -2674,13 +2694,14 @@ simplespawn(const Arg *arg)
     strcat(tmp1, cmd);
     strcat(tmp1, "''");
 
-	if (fork() == 0) {
+	if ((pid = fork()) == 0) {
 		dup2(STDERR_FILENO, STDOUT_FILENO);
 		setsid();
 		execvp("sh", (char*[]) { "sh", "-c", tmp1, NULL });
 		die("dwl: simplespawn() execvp sh failed:");
 	}
     free(tmp1);
+    return pid;
 }
 
 void

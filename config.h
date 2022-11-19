@@ -103,22 +103,29 @@ static const enum libinput_config_accel_profile accel_profile = LIBINPUT_CONFIG_
 static const double accel_speed = 0.0;
 static const int cursor_timeout = 2;
 
-#define WALLPAPER_SCRIPT "luajit $HOME/.config/dotfiles/scripts/wallpaper.lua "
 
 /* Autostart */
-static char *autostart[] = {
-        "gammastep -r",
-        "swww init",
-        WALLPAPER_SCRIPT "0 0",
-        "wl-paste --watch cliphist store",
-        "pulseaudio --start",
+static const char *autostart_simplespawn[] = {
+    "pulseaudio --start",
+    "wl-paste --watch cliphist store",
 };
 
-static const char *const pkill_at_exit[] = {
-    "gammastep", 
+#define WALLPAPER_SCRIPT "luajit $HOME/.config/dotfiles/scripts/wallpaper.lua "
+
+static const char *autostart_execute[] = { 
+    "swww init",
+    WALLPAPER_SCRIPT "0 0",
+    "gammastep -r" 
 };
 
-/* If you want to use the windows key change this to WLR_MODIFIER_LOGO */
+static const char *const at_exit[] = {
+    "swww kill",
+    "gammastep -x",
+    "pkill wl-paste",
+    "pkill gammastep",
+    "pkill swww",
+};
+
 #define TAGKEYS(KEY,SKEY,TAG) \
 	{ ALT,                KEY,            view,            {.ui = 1 << TAG} }, \
 	{ ALT|CTRL,           KEY,            toggleview,      {.ui = 1 << TAG} }, \
