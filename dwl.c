@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <sys/wait.h>
 #include <time.h>
+#include <math.h>
 #include <unistd.h>
 #include <wayland-server-core.h>
 #include <wlr/backend.h>
@@ -2713,6 +2714,52 @@ simplespawnstring(const char *cmd)
     return pid;
 }
 
+#define simplespawn_if_not_running(TORUN) \
+          simplespawnstring("[ \"$(pgrep " TORUN ")\" == \"\" ] && " TORUN);
+
+#define simplespawn_if_not_running1(TORUN, APP1) \
+          simplespawnstring("[ \"$(pgrep " APP1 ")\" == \"\" ] && " TORUN);
+
+#define simplespawn_if_not_running2(TORUN, APP1, APP2) \
+          simplespawnstring("[ \"$(pgrep " APP1 ")\" == \"\" ] && [ \"$(pgrep " APP2 ")\" == \"\" ] && " TORUN);
+
+void
+spawntagapps(unsigned int tag) 
+{
+    switch(tag) {
+      case 3:
+          simplespawn_if_not_running1("alacritty --class cmus --title cmus -e cmus", "cmus");
+        break;
+      case 4:
+          simplespawn_if_not_running("discord");
+          break;
+      case 5:
+          simplespawn_if_not_running("icecat");
+          break;
+      case 6:
+          simplespawn_if_not_running("chromium");
+          break;
+      case 7:
+          simplespawn_if_not_running2("tutanota-desktop", "tutanota-desktop", "aerc");
+          break;
+      case 8:
+          simplespawn_if_not_running("dialect");
+          break;
+      case 9:
+          simplespawn_if_not_running2("freetube", "freetube", "lbry");
+          break;
+      case 10:
+          simplespawn_if_not_running2("multimc", "MultiMC", "Minecraft*");
+          break;
+      case 11:
+          simplespawn_if_not_running("virt-manager");
+          break;
+      case 12:
+          simplespawn_if_not_running2("env LUTRIS_SKIP_INIT=1 lutris lutris:rungameid/1", "Riot", "League");
+          break;
+    }
+}
+
 void
 startdrag(struct wl_listener *listener, void *data)
 {
@@ -3019,6 +3066,9 @@ void
 view(const Arg *arg)
 {
 	size_t i, tmptag;
+    
+    
+    spawntagapps((unsigned int) log2(arg->ui));
 
 	if (!selmon || (arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
 		return;
