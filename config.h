@@ -24,7 +24,11 @@ static const float focuscolor[]     = {1.0, 0.0, 0.0, 1.0};
 static const float fullscreen_bg[]  = {0.1, 0.1, 0.1, 1.0};
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3" };
+#define TAG_COUNT 4
+static const char *tags[] = {
+    "T", "q", "w", "n", "d", "s", "a", "z",
+    "t", "f", "c", "g", "v", "h"
+};
 
 
 static const Rule rules[] = {
@@ -158,6 +162,20 @@ static const Key keys[] = {
 	TAGKEYS(                    XKB_KEY_Tab,        XKB_KEY_ISO_Left_Tab,    0),
 	TAGKEYS(                    XKB_KEY_q,          XKB_KEY_Q,      1),
 	TAGKEYS(                    XKB_KEY_w,          XKB_KEY_W,      2),
+    
+	TAGKEYS(                    XKB_KEY_n,          XKB_KEY_N,      3),
+	TAGKEYS(                    XKB_KEY_d,          XKB_KEY_D,      4),
+	TAGKEYS(                    XKB_KEY_s,          XKB_KEY_S,      5),
+	TAGKEYS(                    XKB_KEY_a,          XKB_KEY_A,      6),
+	TAGKEYS(                    XKB_KEY_z,          XKB_KEY_Z,      7),
+	TAGKEYS(                    XKB_KEY_t,          XKB_KEY_T,      8),
+	TAGKEYS(                    XKB_KEY_f,          XKB_KEY_F,      9),
+	TAGKEYS(                    XKB_KEY_c,          XKB_KEY_C,      10),
+	TAGKEYS(                    XKB_KEY_g,          XKB_KEY_G,      11),
+	TAGKEYS(                    XKB_KEY_v,          XKB_KEY_V,      12),
+	TAGKEYS(                    XKB_KEY_h,          XKB_KEY_H,      13),
+
+
     // view all tags at once
 	{ SUPER,                    XKB_KEY_0,          view,           {.ui = ~0} },
 
