@@ -32,12 +32,31 @@ static const char *tags[] = {
 
 
 static const Rule rules[] = {
-	/* app_id     title       tags mask     isfloating  isterm  noswallow  monitor */
-	/* examples:
-	{ "Gimp",       NULL,       0,            1,          0,      1,         -1 },
-	*/
-    { "alacritty",  NULL,       0,            0,          1,      0,         -1 },
-    { "imv",        NULL,       0,            0,          0,      0,         -1 },
+	/* app_id                 title   tags mask   iscentered isfloating isterm noswallow  monitor */
+    { "alacritty",            NULL,   0,          0,  0,  1,  0,  -1 },
+    
+    { "cmus",                 NULL,   1 << 3,     0,  0,  0,  0,  -1 },
+    { "discord",              NULL,   1 << 4,     0,  0,  0,  0,  -1 },
+    { "icecat",               NULL,   1 << 5,     0,  0,  0,  0,  -1 },
+    { "chromium",             NULL,   1 << 6,     0,  0,  0,  0,  -1 },
+    { "tutanota-desktop",     NULL,   1 << 7,     0,  0,  0,  0,  -1 },
+    { "aerc",                 NULL,   1 << 7,     0,  0,  0,  0,  -1 },
+    { "dialect",              NULL,   1 << 8,     0,  0,  0,  0,  -1 },
+    { "FreeTube",             NULL,   1 << 9,     0,  0,  0,  0,  -1 },
+    { "LBRY",                 NULL,   1 << 9,     0,  0,  0,  0,  -1 },
+    { "MultiMC",              NULL,   1 << 10,    0,  0,  0,  0,  -1 },
+    { "Minecraft*",           NULL,   1 << 10,    0,  0,  0,  0,  -1 },
+    { "virt-manager",         NULL,   1 << 11,    0,  0,  0,  0,  -1 },
+    { "explorer.exe",         NULL,   1 << 12,    1,  1,  0,  0,  -1 },
+    { "leagueclient.exe",     NULL,   1 << 12,    1,  1,  0,  0,  -1 },
+    { "league of legends.exe",NULL,   1 << 12,    0,  1,  0,  0,  -1 },
+    { "leagueclientux.exe"   ,NULL,   1 << 12,    1,  1,  0,  0,  -1 },
+    { "riotclientux.exe"     ,NULL,   1 << 12,    1,  1,  0,  0,  -1 },
+    { "live.na.exe"          ,NULL,   1 << 12,    1,  1,  0,  0,  -1 },
+    { "Steam"                ,NULL,   1 << 13,    0,  0,  0,  0,  -1 },
+    { "Lutris"               ,NULL,   1 << 13,    0,  0,  0,  0,  -1 },
+    { "steap_app_960090"     ,NULL,   1 << 13,    0,  0,  0,  0,  -1 },
+    { "CrossCode"            ,NULL,   1 << 13,    0,  0,  0,  0,  -1 },
 };
 
 /* layout(s) */
