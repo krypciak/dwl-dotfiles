@@ -123,7 +123,7 @@ struct Client{
 #endif
 	unsigned int bw;
 	unsigned int tags;
-	int isfloating, isurgent, isfullscreen, isterm, noswallow, issticky;
+	int iscentered, isfloating, isurgent, isfullscreen, isterm, noswallow, issticky;
 
 	uint32_t resize; /* configure serial of a pending resize */
 	pid_t pid;
@@ -212,6 +212,7 @@ typedef struct {
 	const char *id;
 	const char *title;
 	unsigned int tags;
+	int iscentered;
 	int isfloating;
 	int isterm;
 	int noswallow;
@@ -572,6 +573,7 @@ applyrules(Client *c)
 	for (r = rules; r < END(rules); r++) {
 		if ((!r->title || strstr(title, r->title))
 				&& (!r->id || strstr(appid, r->id))) {
+			c->iscentered = r->iscentered;
 			c->isfloating = r->isfloating;
 			c->isterm     = r->isterm;
 			c->noswallow  = r->noswallow;
@@ -581,6 +583,10 @@ applyrules(Client *c)
 				if (r->monitor == i++)
 					mon = m;
 		}
+	}
+	if (c->iscentered) {
+		c->geom.x = (mon->w.width - c->geom.width) / 2 + mon->m.x;
+		c->geom.y = (mon->w.height - c->geom.height) / 2 + mon->m.y;
 	}
 	wlr_scene_node_reparent(c->scene, layers[c->isfloating ? LyrFloat : LyrTile]);
 	setmon(c, mon, newtags);
