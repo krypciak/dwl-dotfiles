@@ -36,7 +36,7 @@ static const Rule rules[] = {
     { "alacritty",            NULL,   0,          0,  0,  1,  0,  -1 },
     
     { "cmus",                 NULL,   1 << 3,     0,  0,  0,  0,  -1 },
-    { "discord",              NULL,   1 << 4,     0,  0,  0,  0,  -1 },
+    { "discord",              NULL,   1 << 4,     1,  0,  0,  0,  -1 },
     { "icecat",               NULL,   1 << 5,     0,  0,  0,  0,  -1 },
     { "chromium",             NULL,   1 << 6,     0,  0,  0,  0,  -1 },
     { "tutanota-desktop",     NULL,   1 << 7,     0,  0,  0,  0,  -1 },
@@ -49,7 +49,7 @@ static const Rule rules[] = {
     { "virt-manager",         NULL,   1 << 11,    0,  0,  0,  0,  -1 },
     { "explorer.exe",         NULL,   1 << 12,    1,  1,  0,  0,  -1 },
     { "leagueclient.exe",     NULL,   1 << 12,    1,  1,  0,  0,  -1 },
-    { "league of legends.exe",NULL,   1 << 12,    0,  1,  0,  0,  -1 },
+    { "league of legends.exe",NULL,   1 << 12,    0,  0,  0,  0,  -1 },
     { "leagueclientux.exe"   ,NULL,   1 << 12,    1,  1,  0,  0,  -1 },
     { "riotclientux.exe"     ,NULL,   1 << 12,    1,  1,  0,  0,  -1 },
     { "live.na.exe"          ,NULL,   1 << 12,    1,  1,  0,  0,  -1 },
@@ -241,7 +241,7 @@ static const Key keys[] = {
     { SUPER|ALT,                XKB_KEY_c,          simplespawn,    {.v = "rm $HOME/.cache/cliphist/db" } },
 
     { SUPER|ALT,                XKB_KEY_s,          simplespawn,    {.v = "pkill steam" } },
-    { SUPER|ALT,                XKB_KEY_v,          simplespawn,    {.v = "pkill League" } },
+    { SUPER|ALT,                XKB_KEY_v,          simplespawn,    {.v = "pkill -9 League && pkill -9 Riot" } },
     { SUPER|ALT,                XKB_KEY_y,          simplespawn,    {.v = "pkill lbry" } },
     { SUPER|ALT,                XKB_KEY_z,          simplespawn,    {.v = "pkill tutanota" } },
     { SUPER|ALT,                XKB_KEY_u,          simplespawn,    {.v = "pkill gammastep" } },
