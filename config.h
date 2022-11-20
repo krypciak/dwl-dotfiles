@@ -130,6 +130,7 @@ static const int cursor_timeout = 2;
 
 /* Autostart */
 static const char *autostart_simplespawn[] = {
+    "$HOME/.config/dwl/someblocks/someblocks",
     "pulseaudio --start",
     "wl-paste --watch cliphist store",
 };
@@ -148,6 +149,7 @@ static const char *const at_exit[] = {
     "pkill wl-paste",
     "pkill gammastep",
     "pkill swww",
+    "pkill someblocks",
 };
 
 #define TAGKEYS(KEY,SKEY,TAG) \
