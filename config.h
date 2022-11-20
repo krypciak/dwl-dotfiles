@@ -143,6 +143,10 @@ static const char *autostart_execute[] = {
     "gammastep -r" 
 };
 
+static const char *autostart_simplespawn_2s[] = { 
+    "keepassxc", "tutanota-desktop"
+};
+
 static const char *const at_exit[] = {
     "swww kill",
     "gammastep -x",

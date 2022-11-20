@@ -497,6 +497,7 @@ autostartexec(void)
 {
     async_sleep_simplespawn_array(0, autostart_simplespawn);
     async_sleep_execute_array(0, autostart_execute);
+    async_sleep_simplespawn_array(2, autostart_simplespawn_2s);
 }
 
 void
