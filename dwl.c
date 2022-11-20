@@ -2727,34 +2727,34 @@ void
 spawntagapps(unsigned int tag) 
 {
     switch(tag) {
-      case 3:
+      case 1 << 3:
           simplespawn_if_not_running1("alacritty --class cmus --title cmus -e cmus", "cmus");
         break;
-      case 4:
+      case 1 << 4:
           simplespawn_if_not_running("discord");
           break;
-      case 5:
+      case 1 << 5:
           simplespawn_if_not_running("icecat");
           break;
-      case 6:
+      case 1 << 6:
           simplespawn_if_not_running("chromium");
           break;
-      case 7:
+      case 1 << 7:
           simplespawn_if_not_running2("tutanota-desktop", "tutanota-desktop", "aerc");
           break;
-      case 8:
+      case 1 << 8:
           simplespawn_if_not_running("dialect");
           break;
-      case 9:
+      case 1 << 9:
           simplespawn_if_not_running2("freetube", "freetube", "lbry");
           break;
-      case 10:
+      case 1 << 10:
           simplespawn_if_not_running2("multimc", "MultiMC", "Minecraft*");
           break;
-      case 11:
+      case 1 << 11:
           simplespawn_if_not_running("virt-manager");
           break;
-      case 12:
+      case 1 << 12:
           simplespawn_if_not_running2("env LUTRIS_SKIP_INIT=1 lutris lutris:rungameid/1", "Riot", "League");
           break;
     }
@@ -3068,7 +3068,7 @@ view(const Arg *arg)
 	size_t i, tmptag;
     
     
-    spawntagapps((unsigned int) log2(arg->ui));
+    spawntagapps(arg->ui);
 
 	if (!selmon || (arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
 		return;
