@@ -993,7 +993,7 @@ createmon(struct wl_listener *listener, void *data)
 	wl_list_insert(&mons, &m->link);
 	printstatus();
 
-<<<<<<< HEAD
+
 	m->pertag = calloc(1, sizeof(Pertag));
 	m->pertag->curtag = m->pertag->prevtag = 1;
 
@@ -1005,7 +1005,7 @@ createmon(struct wl_listener *listener, void *data)
 		m->pertag->ltidxs[i][1] = m->lt[1];
 		m->pertag->sellts[i] = m->sellt;
 	}
-=======
+
 	/* The xdg-protocol specifies:
 	 *
 	 * If the fullscreened surface is not opaque, the compositor must make
@@ -1017,7 +1017,7 @@ createmon(struct wl_listener *listener, void *data)
 	/* updatemons() will resize and set correct position */
 	m->fullscreen_bg = wlr_scene_rect_create(layers[LyrFS], 0, 0, fullscreen_bg);
 	wlr_scene_node_set_enabled(&m->fullscreen_bg->node, 0);
->>>>>>> ea1b2dda635fec8ac18ab3e6578eadd2a0f7202d
+
 
 	/* Adds this to the output layout in the order it was configured in.
 	 *
@@ -1811,14 +1811,10 @@ motionnotify(uint32_t time)
 
 	/* time is 0 in internal calls meant to restore pointer focus. */
 	if (time) {
-<<<<<<< HEAD
-		wlr_idle_notify_activity(idle, seat);
-		handlecursoractivity(false);
-=======
-		IDLE_NOTIFY_ACTIVITY;
->>>>>>> ea1b2dda635fec8ac18ab3e6578eadd2a0f7202d
+               IDLE_NOTIFY_ACTIVITY;
+	        //handlecursoractivity(false);
 
-		/* Update selmon (even while dragging a window) */
+	        /* Update selmon (even while dragging a window) */
 		if (sloppyfocus)
 			selmon = xytomon(cursor->x, cursor->y);
 	}
@@ -2136,10 +2132,6 @@ requeststartdrag(struct wl_listener *listener, void *data)
 		wlr_data_source_destroy(event->drag->source);
 }
 
-void
-<<<<<<< HEAD
-resize(Client *c, struct wlr_box geo, int interact, int draw_borders)
-=======
 requestmonstate(struct wl_listener *listener, void *data)
 {
 	struct wlr_output_event_request_state *event = data;
@@ -2147,8 +2139,7 @@ requestmonstate(struct wl_listener *listener, void *data)
 }
 
 void
-resize(Client *c, struct wlr_box geo, int interact)
->>>>>>> ea1b2dda635fec8ac18ab3e6578eadd2a0f7202d
+resize(Client *c, struct wlr_box geo, int interact, int draw_borders)
 {
 	struct wlr_box *bbox = interact ? &sgeom : &c->mon->w;
 	client_set_bounds(c, geo.width, geo.height);
@@ -2265,13 +2256,11 @@ void
 setfloating(Client *c, int floating)
 {
 	c->isfloating = floating;
-<<<<<<< HEAD
-	wlr_scene_node_reparent(c->scene, layers[c->isfloating ? LyrFloat : LyrTile]);
+
+	wlr_scene_node_reparent(&c->scene->node, layers[c->isfloating ? LyrFloat : LyrTile]);
 	if (c->isfloating && !c->bw)
 		resize(c, c->mon->m, 0, 1);
-=======
-	wlr_scene_node_reparent(&c->scene->node, layers[c->isfloating ? LyrFloat : LyrTile]);
->>>>>>> ea1b2dda635fec8ac18ab3e6578eadd2a0f7202d
+
 	arrange(c->mon);
 	printstatus();
 }
@@ -2289,7 +2278,6 @@ setfullscreen(Client *c, int fullscreen)
 
 	if (fullscreen) {
 		c->prev = c->geom;
-<<<<<<< HEAD
 		resize(c, c->mon->m, 0, 0);
 		/* The xdg-protocol specifies:
 		 *
@@ -2313,14 +2301,7 @@ setfullscreen(Client *c, int fullscreen)
 			wlr_scene_node_destroy(&c->fullscreen_bg->node);
 			c->fullscreen_bg = NULL;
 		}
-=======
-		resize(c, c->mon->m, 0);
-	} else {
-		/* restore previous size instead of arrange for floating windows since
-		 * client positions are set by the user and cannot be recalculated */
-		resize(c, c->prev, 0);
->>>>>>> ea1b2dda635fec8ac18ab3e6578eadd2a0f7202d
-	}
+}
 	arrange(c->mon);
 	printstatus();
 }
@@ -2607,7 +2588,6 @@ setup(void)
 }
 
 void
-<<<<<<< HEAD
 sigchld(int unused)
 {
 	/* We should be able to remove this function in favor of a simple
@@ -2627,8 +2607,6 @@ sigchld(int unused)
 
 __attribute__((unused))
 void
-=======
->>>>>>> ea1b2dda635fec8ac18ab3e6578eadd2a0f7202d
 spawn(const Arg *arg)
 {
 	if (fork() == 0) {
