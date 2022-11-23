@@ -449,8 +449,8 @@ applybounds(Client *c, struct wlr_box *bbox)
 		struct wlr_box min = {0}, max = {0};
 		client_get_size_hints(c, &max, &min);
 		/* try to set size hints */
-		c->geom.width = MAX(min.width + (2 * c->bw), c->geom.width);
-		c->geom.height = MAX(min.height + (2 * c->bw), c->geom.height);
+		c->geom.width = MAX(min.width + (2 * (int)c->bw), c->geom.width);
+		c->geom.height = MAX(min.height + (2 * (int)c->bw), c->geom.height);
 		/* Some clients set them max size to INT_MAX, which does not violates
 		 * the protocol but its innecesary, they can set them max size to zero. */
 		if (max.width > 0 && !(2 * c->bw > INT_MAX - max.width)) /* Checks for overflow */
@@ -2236,6 +2236,7 @@ resize(Client *c, struct wlr_box geo, int interact, int draw_borders)
 {
 	struct wlr_box *bbox = interact ? &sgeom : &c->mon->w;
 	c->geom = geo;
+
 	c->bw = draw_borders ? borderpx : 0;
 	applybounds(c, bbox);
 
@@ -2249,15 +2250,6 @@ resize(Client *c, struct wlr_box geo, int interact, int draw_borders)
 	wlr_scene_node_set_position(&c->border[1]->node, 0, c->geom.height - c->bw);
 	wlr_scene_node_set_position(&c->border[2]->node, 0, c->bw);
 	wlr_scene_node_set_position(&c->border[3]->node, c->geom.width - c->bw, c->bw);
-
-   // if(c->bw == 0) {
-   //     for(int i = 0; i < 4; i++) 
-   //         c->border[i]->node.enabled = 0;
-   // }
-   // if(c->border[0]->node.enabled == 0) {
-   //     for(int i = 0; i < 4; i++) 
-   //         c->border[i]->node.enabled = 1;
-   // }
 
 	if (c->fullscreen_bg)
 		wlr_scene_rect_set_size(c->fullscreen_bg, c->geom.width, c->geom.height);
