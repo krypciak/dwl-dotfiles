@@ -540,7 +540,7 @@ applyrules(Client *c)
 		c->geom.x = (mon->w.width - c->geom.width) / 2 + mon->m.x;
 		c->geom.y = (mon->w.height - c->geom.height) / 2 + mon->m.y;
 	}
-	wlr_scene_node_reparent(c->scene->node, layers[c->isfloating ? LyrFloat : LyrTile]);
+	wlr_scene_node_reparent(&c->scene->node, layers[c->isfloating ? LyrFloat : LyrTile]);
 
 	setmon(c, mon, newtags);
 }
@@ -629,11 +629,8 @@ axisnotify(struct wl_listener *listener, void *data)
 {
 	/* This event is forwarded by the cursor when a pointer emits an axis event,
 	 * for example when you move the scroll wheel. */
-	struct wlr_event_pointer_axis *event = data;
+	struct wlr_pointer_axis_event *event = data;
 	IDLE_NOTIFY_ACTIVITY;
-
-	//handlecursoractivity(true);
-
 	/* TODO: allow usage of scroll whell for mousebindings, it can be implemented
 	 * checking the event's orientation and the delta of the event */
 	/* Notify the client with pointer focus of the axis event. */
@@ -1428,8 +1425,8 @@ swallow(Client *c, Client *w) {
 		resize(c, w->geom, 0, true);
 		wl_list_insert(&w->link, &c->link);
 		wl_list_insert(&w->flink, &c->flink);
-		wlr_scene_node_set_enabled(w->scene, 0);
-		wlr_scene_node_set_enabled(c->scene, 1);
+		wlr_scene_node_set_enabled(&w->scene->node, 0);
+		wlr_scene_node_set_enabled(&c->scene->node, 1);
 }
 
 void
@@ -1743,6 +1740,7 @@ maximizenotify(struct wl_listener *listener, void *data)
 	wlr_xdg_surface_schedule_configure(c->surface.xdg);
 }
 
+__attribute__((unused))
 void
 monocle(Monitor *m)
 {
@@ -2046,8 +2044,8 @@ powermgrsetmodenotify(struct wl_listener *listener, void *data)
 {
 	struct wlr_output_power_v1_set_mode_event *event = data;
 	wlr_output_enable(event->output, event->mode);
-	if (event->mode)
-		wlr_output_damage_whole(event->output);
+	//if (event->mode)
+	//	wlr_output_damage_whole(event->output);
 	wlr_output_commit(event->output);
 }
 
@@ -2137,6 +2135,7 @@ requeststartdrag(struct wl_listener *listener, void *data)
 		wlr_data_source_destroy(event->drag->source);
 }
 
+void
 requestmonstate(struct wl_listener *listener, void *data)
 {
 	struct wlr_output_event_request_state *event = data;
@@ -2170,9 +2169,6 @@ resize(Client *c, struct wlr_box geo, int interact, int draw_borders)
    //     for(int i = 0; i < 4; i++) 
    //         c->border[i]->node.enabled = 1;
    // }
-
-	if (c->fullscreen_bg)
-		wlr_scene_rect_set_size(c->fullscreen_bg, c->geom.width, c->geom.height);
 
 	/* wlroots makes this a no-op if size hasn't changed */
 	c->resize = client_set_size(c, c->geom.width - 2 * c->bw,
@@ -2296,28 +2292,10 @@ setfullscreen(Client *c, int fullscreen)
 	if (fullscreen) {
 		c->prev = c->geom;
 		resize(c, c->mon->m, 0, 0);
-		/* The xdg-protocol specifies:
-		 *
-		 * If the fullscreened surface is not opaque, the compositor must make
-		 * sure that other screen content not part of the same surface tree (made
-		 * up of subsurfaces, popups or similarly coupled surfaces) are not
-		 * visible below the fullscreened surface.
-		 *
-		 * For brevity we set a black background for all clients
-		 */
-		if (!c->fullscreen_bg) {
-			c->fullscreen_bg = wlr_scene_rect_create(c->scene,
-				c->geom.width, c->geom.height, fullscreen_bg);
-			wlr_scene_node_lower_to_bottom(&c->fullscreen_bg->node);
-		}
 	} else {
 		/* restore previous size instead of arrange for floating windows since
 		 * client positions are set by the user and cannot be recalculated */
 		resize(c, c->prev, 0, 1);
-		if (c->fullscreen_bg) {
-			wlr_scene_node_destroy(&c->fullscreen_bg->node);
-			c->fullscreen_bg = NULL;
-		}
 }
 	arrange(c->mon);
 	printstatus();
@@ -2602,24 +2580,6 @@ setup(void)
 		fprintf(stderr, "failed to setup XWayland X server, continuing without it\n");
 	}
 #endif
-}
-
-void
-sigchld(int unused)
-{
-	/* We should be able to remove this function in favor of a simple
-	 *     signal(SIGCHLD, SIG_IGN);
-	 * but the Xwayland implementation in wlroots currently prevents us from
-	 * setting our own disposition for SIGCHLD.
-	 */
-	pid_t pid;
-
-	if (signal(SIGCHLD, sigchld) == SIG_ERR)
-		die("can't install SIGCHLD handler:");
-	while (0 < (pid = waitpid(-1, NULL, WNOHANG))) {
-		if (pid == child_pid)
-			child_pid = -1;
-	}
 }
 
 __attribute__((unused))
@@ -3169,9 +3129,10 @@ configurex11(struct wl_listener *listener, void *data)
 	struct wlr_xwayland_surface_configure_event *event = data;
 	if (!c->mon)
 		return;
+    //plsreturn
 	if (c->isfloating || c->type == X11Unmanaged)
 		resize(c, (struct wlr_box){.x = event->x, .y = event->y,
-				.width = event->width, .height = event->height}, 0);
+				.width = event->width, .height = event->height}, 0, 1);
 	else
 		arrange(c->mon);
 }
