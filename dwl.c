@@ -97,7 +97,7 @@ typedef struct Client Client;
 struct Client{
 	/* Must keep these three elements in this order */
 	unsigned int type; /* XDGShell or X11* */
-	struct wlr_box geom;  /* layout-relative, includes border */
+	struct wlr_box geom;  /* layout-relative, includes order */
 	Monitor *mon;
 	struct wlr_scene_node *scene;
 	struct wlr_scene_rect *border[4]; /* top, bottom, left, right */
@@ -123,7 +123,7 @@ struct Client{
 #endif
 	unsigned int bw;
 	unsigned int tags;
-	int iscentered, isfloating, isurgent, isfullscreen, isterm, noswallow, issticky;
+	int iscentered, isfloating, isurgent, isfullscreen, isterm, noswallow, issticky, ismaximilized;
 
 	uint32_t resize; /* configure serial of a pending resize */
 	pid_t pid;
@@ -214,6 +214,8 @@ typedef struct {
 	unsigned int tags;
 	int iscentered;
 	int isfloating;
+    int isfullscreen;
+    int ismaximilized;
 	int isterm;
 	int noswallow;
 	int monitor;
@@ -318,6 +320,7 @@ static void tagmon(const Arg *arg);
 static void tile(Monitor *m);
 static void togglefloating(const Arg *arg);
 static void togglesticky(const Arg *arg);
+static void togglemaximilized(const Arg *arg);
 static void togglefullscreen(const Arg *arg);
 static void togglegaps(const Arg *arg);
 static void toggletag(const Arg *arg);
@@ -578,6 +581,8 @@ applyrules(Client *c)
 			c->isfloating = r->isfloating;
 			c->isterm     = r->isterm;
 			c->noswallow  = r->noswallow;
+			c->isfullscreen = r->isfullscreen;
+			c->ismaximilized = r->ismaximilized;
 			newtags |= r->tags;
 			i = 0;
 			wl_list_for_each(m, &mons, link)
@@ -2244,12 +2249,23 @@ resize(Client *c, struct wlr_box geo, int interact, int draw_borders)
 	wlr_scene_node_set_position(&c->border[1]->node, 0, c->geom.height - c->bw);
 	wlr_scene_node_set_position(&c->border[2]->node, 0, c->bw);
 	wlr_scene_node_set_position(&c->border[3]->node, c->geom.width - c->bw, c->bw);
+
+   // if(c->bw == 0) {
+   //     for(int i = 0; i < 4; i++) 
+   //         c->border[i]->node.enabled = 0;
+   // }
+   // if(c->border[0]->node.enabled == 0) {
+   //     for(int i = 0; i < 4; i++) 
+   //         c->border[i]->node.enabled = 1;
+   // }
+
 	if (c->fullscreen_bg)
 		wlr_scene_rect_set_size(c->fullscreen_bg, c->geom.width, c->geom.height);
 
 	/* wlroots makes this a no-op if size hasn't changed */
 	c->resize = client_set_size(c, c->geom.width - 2 * c->bw,
 			c->geom.height - 2 * c->bw);
+    
 }
 
 void
@@ -2828,6 +2844,12 @@ tile(Monitor *m)
 	wl_list_for_each(c, &clients, link) {
 		if (!VISIBLEON(c, m) || c->isfloating || c->isfullscreen)
 			continue;
+
+        if(c->ismaximilized) {
+			resize(c, (struct wlr_box){.x = m->w.x, .y = m->w.y,
+				.width = m->w.width, .height = m->w.height}, 0, 0);
+            continue;
+        }
 		if (i < m->nmaster) {
 			r = MIN(n, m->nmaster) - i;
 			h = (m->w.height - my - m->gappoh*oe - m->gappih*ie * (r - 1)) / r;
@@ -2863,6 +2885,17 @@ togglesticky(const Arg *arg)
 	sel->issticky = !sel->issticky;
 	arrange(selmon);
 }
+
+void
+togglemaximilized(const Arg *arg)
+{
+	Client *sel = selclient();
+	if (!sel)
+		return;
+	sel->ismaximilized = !sel->ismaximilized;
+	arrange(selmon);
+}
+
 
 void
 togglefullscreen(const Arg *arg)
