@@ -3240,9 +3240,9 @@ createnotifyx11(struct wl_listener *listener, void *data)
 	struct wlr_xwayland_surface *xwayland_surface = data;
 	Client *c;
 	/* TODO: why we unset fullscreen when a xwayland client is created? */
-	wl_list_for_each(c, &clients, link)
-		if (c->isfullscreen && VISIBLEON(c, c->mon))
-			setfullscreen(c, 0);
+	//wl_list_for_each(c, &clients, link)
+	//	if (c->isfullscreen && VISIBLEON(c, c->mon))
+	//		setfullscreen(c, 0);
 
 	/* Allocate a Client for this surface */
 	c = xwayland_surface->data = ecalloc(1, sizeof(*c));
