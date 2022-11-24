@@ -2713,11 +2713,11 @@ simplespawnstring(const char *cmd)
     char *tmp1;
     int pid;
 
-    tmp1 = malloc(strlen(cmd)+6);
+    tmp1 = malloc(strlen(cmd)+25);
     tmp1[0] = '\0';
     strcat(tmp1, "''");
     strcat(tmp1, cmd);
-    strcat(tmp1, "''");
+    strcat(tmp1, " > /dev/null 2>&1''");
 
 	if ((pid = fork()) == 0) {
 		dup2(STDERR_FILENO, STDOUT_FILENO);
