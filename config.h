@@ -237,9 +237,9 @@ static const Key keys[] = {
 	{ ALT,                      XKB_KEY_r,          simplespawn,    {.v = "fuzzel --log-level=warning" } },
 	{ ALT,                      XKB_KEY_Return,     simplespawn,    {.v = "alacritty" } },
     // clipboard history view
-    { SUPER,                    XKB_KEY_c,          simplespawn,    {.v = "cliphist list | fuzzel -d --log-level=none | cliphist decode | wl-copy" } },
+    { CAPS,                     XKB_KEY_1,          simplespawn,    {.v = "cliphist list | fuzzel -d --log-level=none | cliphist decode | wl-copy" } },
     // clear the clipboard history
-    { SUPER|ALT,                XKB_KEY_c,          simplespawn,    {.v = "rm $HOME/.cache/cliphist/db" } },
+    { CAPS|CTRL,                XKB_KEY_1,          simplespawn,    {.v = "rm $HOME/.cache/cliphist/db" } },
 
     { SUPER|ALT,                XKB_KEY_s,          simplespawn,    {.v = "pkill steam" } },
     { SUPER|ALT,                XKB_KEY_v,          simplespawn,    {.v = "pkill -9 League && pkill -9 Riot" } },
