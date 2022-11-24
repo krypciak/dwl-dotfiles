@@ -145,7 +145,7 @@ static const char *autostart_execute[] = {
 
 static const char *autostart_simplespawn_2s[] = { 
     "[ \"$(pgrep keepassxc)\" == \"\" ] && keepassxc",
-    //"[ \"$(pgrep tutanota-deskop)\" == \"\" ] && tutanota-desktop"
+    "[ \"$(pgrep tutanota-deskop)\" == \"\" ] && tutanota-desktop"
 };
 
 static const char *const at_exit[] = {
