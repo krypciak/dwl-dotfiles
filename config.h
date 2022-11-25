@@ -282,6 +282,11 @@ static const Key keys[] = {
     // next screen
     // prev screen
     //{ CAPS,                     XKB_KEY_v,          
+    
+    // screenshot
+    { CAPS,                     XKB_KEY_z,          simplespawn,    {.v = "grim - | wl-copy" } },
+    { CAPS,                     XKB_KEY_c,          simplespawn,    {.v = "grim -g \"$(slurp)\" - | wl-copy" } },
+
 
     // power
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_P,          simplespawn,    {.v = "loginctl poweroff" } },
