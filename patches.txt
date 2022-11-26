@@ -10,3 +10,5 @@ https://github.com/djpohly/dwl/wiki/movestack
 https://github.com/djpohly/dwl/wiki/sticky
 https://github.com/djpohly/dwl/wiki/smartborders
 https://github.com/djpohly/dwl/wiki/center
+https://github.com/djpohly/dwl/wiki/pointerConstraints
+
