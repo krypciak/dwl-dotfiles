@@ -489,9 +489,20 @@ applybounds(Client *c, struct wlr_box *bbox)
 		c->geom.y = bbox->y;
 }
 
+#define async_sleep_simplespawn(SECONDS,CMD) \
+    { \
+        void *thread_func(void *data12) { \
+            sleep(SECONDS); \
+            simplespawnstring(CMD); \
+            return NULL; \
+        } \
+        pthread_t wait_thread; \
+        pthread_create(&wait_thread, NULL, thread_func, NULL); \
+    }
+
 #define async_sleep_simplespawn_array(SECONDS,ARRAY) \
     { \
-        void *thread_func(void *data) { \
+        void *thread_func(void *data12) { \
             sleep(SECONDS); \
             for(int ite = 0; ite < LENGTH(ARRAY); ite++) { \
                 simplespawnstring(ARRAY[ite]); \
@@ -504,7 +515,7 @@ applybounds(Client *c, struct wlr_box *bbox)
 
 #define async_sleep_execute_array(SECONDS,ARRAY) \
     { \
-        void *thread_func(void *data) { \
+        void *thread_func(void *data12) { \
             sleep(SECONDS); \
             for(int ite = 0; ite < LENGTH(ARRAY); ite++) { \
                 system(ARRAY[ite]); \
@@ -781,6 +792,15 @@ buttonpress(struct wl_listener *listener, void *data)
 
 	wlr_idle_notify_activity(idle, seat);
 	handlecursoractivity(true);
+   
+
+    if(event->button == 276) {
+        switch(event->state) {
+        case WLR_BUTTON_PRESSED:  simplespawnstring("amixer set Capture cap"); break;
+        case WLR_BUTTON_RELEASED: async_sleep_simplespawn(0.4, "amixer set Capture nocap"); break;
+        }
+    }
+
 
 	switch (event->state) {
 	case WLR_BUTTON_PRESSED:
@@ -2800,6 +2820,9 @@ simplespawnstring(const char *cmd)
     strcat(tmp1, "''");
     strcat(tmp1, cmd);
     strcat(tmp1, " > /dev/null 2>&1''");
+    //strcat(tmp1, "''");
+
+
 
 	if ((pid = fork()) == 0) {
 		dup2(STDERR_FILENO, STDOUT_FILENO);
