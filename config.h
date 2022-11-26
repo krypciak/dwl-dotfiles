@@ -46,17 +46,18 @@ static const Rule rules[] = {
     { "LBRY",                 NULL,   1 << 9,     0,  0,  0,  0,  0,  0,  -1 },
     { "MultiMC",              NULL,   1 << 10,    0,  0,  0,  0,  0,  0,  -1 },
     { "Minecraft*",           NULL,   1 << 10,    0,  0,  0,  1,  0,  0,  -1 },
-    { "virt-manager",         NULL,   1 << 11,    0,  0,  0,  0,  0,  0,  -1 },
-    { "explorer.exe",         NULL,   1 << 12,    1,  1,  0,  0,  0,  0,  -1 },
-    { "leagueclient.exe",     NULL,   1 << 12,    1,  1,  0,  0,  0,  0,  -1 },
-    { "league of legends.exe",NULL,   1 << 12,    0,  0,  1,  0,  0,  0,  -1 },
-    { "leagueclientux.exe"   ,NULL,   1 << 12,    1,  1,  0,  0,  0,  0,  -1 },
-    { "riotclientux.exe"     ,NULL,   1 << 12,    1,  1,  0,  0,  0,  0,  -1 },
-    { "live.na.exe"          ,NULL,   1 << 12,    1,  1,  0,  0,  0,  0,  -1 },
-    { "Steam"                ,NULL,   1 << 13,    0,  0,  0,  0,  0,  0,  -1 },
-    { "Lutris"               ,NULL,   1 << 13,    0,  0,  0,  0,  0,  0,  -1 },
-    { "steap_app_960090"     ,NULL,   1 << 13,    0,  0,  0,  0,  0,  0,  -1 },
-    { "CrossCode"            ,NULL,   1 << 13,    0,  0,  1,  0,  0,  0,  -1 },
+    { "gamescope",            NULL,   1 << 12,    0,  0,  1,  0,  0,  0,  -1 },
+    //{ "virt-manager",         NULL,   1 << 11,    0,  0,  0,  0,  0,  0,  -1 },
+    //{ "explorer.exe",         NULL,   1 << 12,    1,  1,  0,  0,  0,  0,  -1 },
+    //{ "leagueclient.exe",     NULL,   1 << 12,    1,  1,  0,  0,  0,  0,  -1 },
+    //{ "league of legends.exe",NULL,   1 << 12,    0,  0,  1,  0,  0,  0,  -1 },
+    //{ "leagueclientux.exe"   ,NULL,   1 << 12,    1,  1,  0,  0,  0,  0,  -1 },
+    //{ "riotclientux.exe"     ,NULL,   1 << 12,    1,  1,  0,  0,  0,  0,  -1 },
+    { "live.na.exe",          NULL,   1 << 12,    1,  1,  0,  0,  0,  0,  -1 },
+    { "Steam",                NULL,   1 << 13,    0,  0,  0,  0,  0,  0,  -1 },
+    { "Lutris",               NULL,   1 << 13,    0,  0,  0,  0,  0,  0,  -1 },
+    { "steap_app_960090",     NULL,   1 << 13,    0,  0,  0,  0,  0,  0,  -1 },
+    { "CrossCode",            NULL,   1 << 13,    0,  0,  1,  0,  0,  0,  -1 },
 };
 
 /* layout(s) */
@@ -127,6 +128,8 @@ static const enum libinput_config_accel_profile accel_profile = LIBINPUT_CONFIG_
 static const double accel_speed = 0.0;
 static const int cursor_timeout = 2;
 
+/* pointer constraints */
+static const int allow_constrain      = 1;
 
 /* Autostart */
 static const char *autostart_simplespawn[] = {
