@@ -227,6 +227,9 @@ static const Key keys[] = {
     { CAPS|CTRL,                XKB_KEY_e,          simplespawn,    {.v = "amixer set Capture cap" } },
     { CAPS|CTRL,                XKB_KEY_d,          simplespawn,    {.v = "amixer set Capture nocap" } },
 
+    // select audio output
+    { CAPS|CTRL,                XKB_KEY_q,          simplespawn,    {.v = "pacmd set-default-sink \"$(pactl list sinks short | awk '{print $1 \" <> \" substr($2,13) }' | tr '-' ' ' | tr '_' ' ' | fuzzel -d --log-level=none | awk '{print $1}')\"" } },
+
 
     // gaps
     { CAPS,                     XKB_KEY_y,          incgaps,        {.i = +1} },
