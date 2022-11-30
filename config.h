@@ -133,6 +133,7 @@ static const int allow_constrain      = 1;
 
 /* Autostart */
 static const char *autostart_simplespawn[] = {
+    "wlr-randr --output HDMI-A-1 --mode 2560x1440@143.912003",
     "$HOME/.config/dwl/someblocks/someblocks",
     "pulseaudio --start",
     "wl-paste --watch cliphist store",
