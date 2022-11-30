@@ -137,6 +137,7 @@ static const char *autostart_simplespawn[] = {
     "$HOME/.config/dwl/someblocks/someblocks",
     "pulseaudio --start",
     "wl-paste --watch cliphist store",
+    "amixer set Capture nocap",
 };
 
 #define WALLPAPER_SCRIPT "luajit $HOME/.config/dotfiles/scripts/wallpaper.lua "
