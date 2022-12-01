@@ -184,10 +184,16 @@ static const Key keys[] = {
 	
 	{ SUPER|SHIFT,              XKB_KEY_parenright, tag,            {.ui = ~0} },
     // monitor
+	{ ALT,                      XKB_KEY_comma,      focusmon,       {.i = WLR_DIRECTION_LEFT} },
+	{ ALT,                      XKB_KEY_period,     focusmon,       {.i = WLR_DIRECTION_RIGHT} },
+	{ ALT|SHIFT,                XKB_KEY_less,       tagmon,         {.i = WLR_DIRECTION_LEFT} },
+	{ ALT|SHIFT,                XKB_KEY_greater,    tagmon,         {.i = WLR_DIRECTION_RIGHT} },
+
 	{ SUPER,                    XKB_KEY_comma,      focusmon,       {.i = WLR_DIRECTION_LEFT} },
 	{ SUPER,                    XKB_KEY_period,     focusmon,       {.i = WLR_DIRECTION_RIGHT} },
 	{ SUPER|SHIFT,              XKB_KEY_less,       tagmon,         {.i = WLR_DIRECTION_LEFT} },
 	{ SUPER|SHIFT,              XKB_KEY_greater,    tagmon,         {.i = WLR_DIRECTION_RIGHT} },
+
 
     // tags
 	TAGKEYS(                    XKB_KEY_Tab,        XKB_KEY_ISO_Left_Tab,    0),
