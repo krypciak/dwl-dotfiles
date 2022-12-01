@@ -2397,11 +2397,10 @@ run(char *startup_cmd)
 	 * cursor position, and set default cursor image */
 	selmon = xytomon(cursor->x, cursor->y);
 
-	/* TODO hack to get cursor to display in its initial location (100, 100)
-	 * instead of (0, 0) and then jumping.  still may not be fully
-	 * initialized, as the image/coordinates are not transformed for the
-	 * monitor when displayed here */
-	wlr_cursor_warp_closest(cursor, NULL, cursor->x, cursor->y);
+
+    /* Put the cursor in the middle of the monitor */
+	wlr_cursor_warp(cursor, NULL, selmon->m.x + selmon->m.width/2, selmon->m.y + selmon->m.height/2);
+
 
 	autostartexec();
 
