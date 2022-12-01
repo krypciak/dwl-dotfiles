@@ -544,7 +544,7 @@ autostartexec(void)
     /* hide the cursor after a second */
     async_sleep(1, {
             cursor_hidden = true;
-            handlecursoractivity(false);
+            hidecursor(NULL);
     });
 
     async_sleep_simplespawn_array(0, autostart_simplespawn);
