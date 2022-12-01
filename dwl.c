@@ -526,9 +526,27 @@ applybounds(Client *c, struct wlr_box *bbox)
         pthread_create(&wait_thread, NULL, thread_func, NULL); \
     }
 
+#define async_sleep(SECONDS,CMD) \
+    { \
+        void *thread_func(void *data12) { \
+            sleep(SECONDS); \
+            CMD \
+            return NULL; \
+        } \
+        pthread_t wait_thread; \
+        pthread_create(&wait_thread, NULL, thread_func, NULL); \
+    }
+
+
 void
 autostartexec(void)
 {
+    /* hide the cursor after a second */
+    async_sleep(1, {
+            cursor_hidden = true;
+            handlecursoractivity(false);
+    });
+
     async_sleep_simplespawn_array(0, autostart_simplespawn);
     async_sleep_execute_array(0, autostart_execute);
     async_sleep_simplespawn_array(2, autostart_simplespawn_2s);
