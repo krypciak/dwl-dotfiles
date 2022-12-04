@@ -42,7 +42,7 @@ static const Rule rules[] = {
     { "tutanota-desktop",     NULL,   1 << 7,     0,  0,  0,  0,  0,  0,  -1 },
     { "aerc",                 NULL,   1 << 7,     0,  0,  0,  0,  0,  0,  -1 },
     { "dialect",              NULL,   1 << 8,     0,  0,  0,  0,  0,  0,  -1 },
-    { "FreeTube",             NULL,   1 << 9,     0,  0,  0,  0,  0,  0,  -1 },
+    { "invidious",            NULL,   1 << 9,     0,  0,  0,  0,  0,  0,  -1 },
     { "LBRY",                 NULL,   1 << 9,     0,  0,  0,  0,  0,  0,  -1 },
     { "MultiMC",              NULL,   1 << 10,    0,  0,  0,  0,  0,  0,  -1 },
     { "Minecraft*",           NULL,   1 << 10,    0,  0,  0,  1,  0,  0,  -1 },
