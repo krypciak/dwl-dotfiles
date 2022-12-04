@@ -2884,7 +2884,7 @@ spawntagapps(unsigned int tag)
           simplespawn_if_not_running("dialect");
           break;
       case 1 << 9:
-          simplespawn_if_not_running2("freetube", "freetube", "lbry");
+          simplespawn_if_not_running1("[ $(ps aux | grep invidious | wc -l) -eq 3 ] && env XAPP_FORCE_GTKWINDOW_ICON=~/.local/share/ice/icons/Invidious.png firefox --class invidious --profile ~/.local/share/ice/firefox/invidious --no-remote https://invidious.sethforprivacy.com/", "lbry");
           break;
       case 1 << 10:
           simplespawn_if_not_running2("multimc", "MultiMC", "Minecraft*");
