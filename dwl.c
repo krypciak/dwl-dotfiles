@@ -2893,7 +2893,7 @@ spawntagapps(unsigned int tag)
           simplespawn_if_not_running("virt-manager");
           break;
       case 1 << 12:
-          simplespawn_if_not_running1("env AMD_VULKAN_ICD=RADV gamescope -w 1920 -h 1080 -f -- lutris lutris:rungameid/1", "gamescope");
+          simplespawn_if_not_running1("env AMD_VULKAN_ICD=RADV gamescope -w 2560 -h 1440 -f -- lutris lutris:rungameid/1", "gamescope");
           break;
     }
 }
