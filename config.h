@@ -24,7 +24,6 @@ static const float focuscolor[]     = {1.0, 0.0, 0.0, 1.0};
 static const float fullscreen_bg[]  = {0.1, 0.1, 0.1, 0};
 
 /* tagging */
-#define TAG_COUNT 4
 static const char *tags[] = {
     "T", "q", "w", "n", "d", "s", "a", "z",
     "t", "f", "c", "g", "v", "h"
