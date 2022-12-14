@@ -32,19 +32,19 @@ static const char *tags[] = {
 
 static const Rule rules[] = {
 	/* app_id                 title   tags mask   iscentered isfloating isfullscreen ismaximilized isterm noswallow  monitor */
-    { "alacritty",            NULL,   0,          0,  0,  0,  0,  1,  0,  -1 },
+    { "Alacritty",            NULL,   0,          0,  0,  0,  0,  1,  0,  -1 },
     
     { "cmus",                 NULL,   1 << 3,     0,  0,  0,  0,  0,  0,  -1 },
     { "discord",              NULL,   1 << 4,     1,  0,  0,  0,  0,  0,  -1 },
     { "icecat",               NULL,   1 << 5,     0,  0,  0,  0,  0,  0,  -1 },
-    { "chromium",             NULL,   1 << 6,     0,  0,  0,  0,  0,  0,  -1 },
+    { "Chromium",             NULL,   1 << 6,     0,  0,  0,  0,  0,  0,  -1 },
     { "tutanota-desktop",     NULL,   1 << 7,     0,  0,  0,  0,  0,  0,  -1 },
     { "aerc",                 NULL,   1 << 7,     0,  0,  0,  0,  0,  0,  -1 },
     { "dialect",              NULL,   1 << 8,     0,  0,  0,  0,  0,  0,  -1 },
-    { "invidious",            NULL,   1 << 9,     0,  0,  0,  0,  0,  0,  -1 },
+    { NULL,            "Invidious",   1 << 9,     0,  0,  0,  0,  0,  0,  -1 },
     { "LBRY",                 NULL,   1 << 9,     0,  0,  0,  0,  0,  0,  -1 },
-    { "MultiMC",              NULL,   1 << 10,    0,  0,  0,  0,  0,  0,  -1 },
-    { "Minecraft*",           NULL,   1 << 10,    0,  0,  0,  1,  0,  0,  -1 },
+    { "prismlauncher",        NULL,   1 << 10,    0,  0,  0,  0,  0,  0,  -1 },
+    { NULL,            "Minecraft",   1 << 10,    0,  0,  0,  1,  0,  0,  -1 },
     { "gamescope",            NULL,   1 << 12,    0,  0,  1,  0,  0,  0,  -1 },
     //{ "virt-manager",         NULL,   1 << 11,    0,  0,  0,  0,  0,  0,  -1 },
     //{ "explorer.exe",         NULL,   1 << 12,    1,  1,  0,  0,  0,  0,  -1 },
@@ -81,6 +81,8 @@ static const MonitorRule monrules[] = {
 /* keyboard */
 static const struct xkb_rule_names xkb_rules = {
 	/* can specify fields: rules, model, layout, variant, options */
+    //.layout = "us",
+    //.variant = "dvorak",
     .layout = "pl,us",
     // this is accually a workaround for using capslock as a modkey, caps:shiftlock is modified
 	.options = "caps:shiftlock",
@@ -160,6 +162,7 @@ static const char *const at_exit[] = {
     "pkill gammastep",
     "pkill swww",
     "pkill someblocks",
+    "pkill gnome-keyring",
 };
 
 #define TAGKEYS(KEY,SKEY,TAG) \
@@ -263,6 +266,8 @@ static const Key keys[] = {
     { SUPER|ALT,                XKB_KEY_k,          simplespawn,    {.v = "pkill keepassxc" } },
     { SUPER|ALT,                XKB_KEY_d,          simplespawn,    {.v = "pkill discord" } },
 
+	{ CAPS,                     XKB_KEY_b,          getclientinfo,  {0} },
+
     // layout 
     // master count
 	{ SUPER|SHIFT,              XKB_KEY_L,          incnmaster,     {.i = -1} },
@@ -274,6 +279,7 @@ static const Key keys[] = {
     { CAPS,                    XKB_KEY_r,           cyclelayout,    {.i = +1} },
 	{ CAPS,                    XKB_KEY_f,           cyclelayout,    {.i = -1} },
     
+
     // change focused client 
 	{ SUPER,                    XKB_KEY_j,          focusstack,     {.i = +1} },
 	{ SUPER,                    XKB_KEY_k,          focusstack,     {.i = -1} },

@@ -274,6 +274,7 @@ static void focusmon(const Arg *arg);
 static void focusstack(const Arg *arg);
 static Client *focustop(Monitor *m);
 static void fullscreennotify(struct wl_listener *listener, void *data);
+static void getclientinfo(const Arg *arg);
 static void handleconstraintcommit(struct wl_listener *listener, void *data);
 static void handlecursoractivity(bool restore_focus);
 static int hidecursor(void *data);
@@ -1546,6 +1547,31 @@ fullscreennotify(struct wl_listener *listener, void *data)
 {
 	Client *c = wl_container_of(listener, c, fullscreen);
 	setfullscreen(c, client_wants_fullscreen(c));
+}
+
+void
+getclientinfo(const Arg *arg)
+{
+	char *title, *appid, *cmd = malloc(sizeof(char)*150);
+	Client *c = selclient();
+
+    if(c == NULL) return;
+
+	if ((title = (char*) client_get_title(c)))
+        escape(title);
+    else 
+		title = "null";
+
+	if ((appid = (char*) client_get_appid(c)))
+        escape(appid);
+    else
+		appid = "null";
+
+    sprintf(cmd, "zenity --info --text 'Title: %s\nClass: %s\n'", title, appid);
+    
+    simplespawnstring(cmd);
+
+    free(cmd);
 }
 
 void
@@ -2833,7 +2859,7 @@ simplespawnstring(const char *cmd)
     char *tmp1;
     int pid;
 
-    tmp1 = malloc(strlen(cmd)+25);
+    tmp1 = malloc(sizeof(char)*(strlen(cmd)+25));
     tmp1[0] = '\0';
     strcat(tmp1, "''");
     strcat(tmp1, cmd);
@@ -2884,7 +2910,7 @@ spawntagapps(unsigned int tag)
           simplespawn_if_not_running("dialect");
           break;
       case 1 << 9:
-          simplespawn_if_not_running1("[ $(ps aux | grep invidious | wc -l) -eq 3 ] && env XAPP_FORCE_GTKWINDOW_ICON=~/.local/share/ice/icons/Invidious.png firefox --class invidious --profile ~/.local/share/ice/firefox/invidious --no-remote https://invidious.sethforprivacy.com/", "lbry");
+          simplespawn_if_not_running1("[ $(ps aux | grep invidious | wc -l) -lt 4 ] && env XAPP_FORCE_GTKWINDOW_ICON=~/.local/share/ice/icons/Invidious.png firefox --class invidious --profile ~/.local/share/ice/firefox/invidious --no-remote https://invidious.sethforprivacy.com/", "lbry");
           break;
       case 1 << 10:
           simplespawn_if_not_running2("prismlauncher", "PrismLauncher", "Minecraft*");
