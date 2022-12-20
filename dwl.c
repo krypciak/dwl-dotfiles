@@ -404,7 +404,9 @@ static Monitor *selmon;
 
 static int enablegaps = 1;   /* enables gaps, used by togglegaps */
 
-static int keyboardlayoutindex = 0;
+static int current_keyboard_layout_index = 0;
+static int selected_keyboard_layout_index = 0;
+static int prev_keyboard_layout_index = 0;
 
 struct wlr_pointer_constraints_v1 *pointer_constraints;
 struct wlr_pointer_constraint_v1 *active_constraint;
@@ -510,6 +512,7 @@ applybounds(Client *c, struct wlr_box *bbox)
         void *thread_func(void *data12) { \
             sleep(SECONDS); \
             for(int ite = 0; ite < LENGTH(ARRAY); ite++) { \
+                simplespawn_string(ARRAY[ite]); \
             } \
             return NULL; \
         } \
@@ -1046,7 +1049,7 @@ createkeyboard(struct wlr_input_device *device)
 
 	/* Prepare an XKB keymap and assign it to the keyboard. */
 	context = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
-	keymap = xkb_keymap_new_from_names(context, xkb_rules[0],
+	keymap = xkb_keymap_new_from_names(context, xkb_rules[default_keyboard_layout],
 		XKB_KEYMAP_COMPILE_NO_FLAGS);
 
 	wlr_keyboard_set_keymap(device->keyboard, keymap);
@@ -1066,15 +1069,19 @@ createkeyboard(struct wlr_input_device *device)
 }
 
 void
-setkeyboardlayout(const struct xkb_rule_names *xkb_rule)
+setkeyboardlayout(unsigned int index)
 {
 	struct xkb_keymap *keymap;
 	struct xkb_context *context;
 
     Keyboard *kb;
 
+    if (current_keyboard_layout_index == index) return;
+
+    current_keyboard_layout_index = index;
+
 	context = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
-	keymap = xkb_keymap_new_from_names(context, xkb_rule,
+	keymap = xkb_keymap_new_from_names(context, xkb_rules[index],
 		XKB_KEYMAP_COMPILE_NO_FLAGS);
 
 
@@ -1086,16 +1093,21 @@ setkeyboardlayout(const struct xkb_rule_names *xkb_rule)
     }
 	xkb_keymap_unref(keymap);
 	xkb_context_unref(context);
+
+    //char  cmd[200];
+    //sprintf(cmd, "echo 'changed layout: %d' >> ~/log.txt", index);
+    //simplespawn_string_pipe(cmd, 0);
 }
 
 void
 togglekeyboardlayout(const Arg *arg)
 {
-    keyboardlayoutindex++;
-    if(keyboardlayoutindex >= 2) 
-        keyboardlayoutindex = 0;
-
-    setkeyboardlayout(xkb_rules[keyboardlayoutindex]);
+    selected_keyboard_layout_index++;
+    if(selected_keyboard_layout_index >= 2) 
+        selected_keyboard_layout_index = 0;
+    
+    prev_keyboard_layout_index = selected_keyboard_layout_index;
+    setkeyboardlayout(selected_keyboard_layout_index);
 }
 
 void
@@ -1878,6 +1890,25 @@ keypressmod(struct wl_listener *listener, void *data)
 	/* This event is raised when a modifier key, such as shift or alt, is
 	 * pressed. We simply communicate this to the client. */
 	Keyboard *kb = wl_container_of(listener, kb, modifiers);
+
+	struct wlr_event_keyboard_key *event = data;
+    
+
+    /* Make sure the keyboard layout is qwerty when pressing a modkey */
+    uint32_t mods = wlr_keyboard_get_modifiers(kb->device->keyboard);
+    if (mods == 0) {
+        setkeyboardlayout(prev_keyboard_layout_index);
+    } else if (mods != 1) {
+        prev_keyboard_layout_index = selected_keyboard_layout_index;
+        setkeyboardlayout(0);
+    }
+
+    //char  cmd[200];
+    //sprintf(cmd, "echo 'mods: %d\nprev_kli: %d\nskli: %d\nckli: %d\n' >> ~/log.txt", mods, prev_keyboard_layout_index, selected_keyboard_layout_index, current_keyboard_layout_index);
+
+    //simplespawn_string_pipe(cmd, 0);
+
+
 	/*
 	 * A seat can only have one keyboard, but this is a limitation of the
 	 * Wayland protocol - not wlroots. We assign all connected keyboards to the
