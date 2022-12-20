@@ -81,7 +81,7 @@ static const MonitorRule monrules[] = {
 /* keyboard layouts */
 static const int default_keyboard_layout = 0;
 
-static const struct xkb_rule_names dvorak_layout = {
+static struct xkb_rule_names dvorak_layout = {
     //.layout = "us",
     .variant = "dvorak",
     .layout = "pl",
@@ -89,18 +89,22 @@ static const struct xkb_rule_names dvorak_layout = {
     .options = "caps:shiftlock",
 };
 
-static const struct xkb_rule_names qwerty_layout = {
+static struct xkb_rule_names qwerty_layout = {
     //.layout = "us",
     .layout = "pl,us",
     // this is accually a workaround for using capslock as a modkey, caps:shiftlock is modified
     .options = "caps:shiftlock",
 };
 
+typedef struct {
+    char *name;
+    struct xkb_rule_names *xkb_rule;
+} KeyboardLayout;
 
 /* The first index has to be a qwerty layout */
-static const struct xkb_rule_names *xkb_rules[2] = {
-    &qwerty_layout,
-    &dvorak_layout,
+static const KeyboardLayout keyboard_layouts[2] = {
+    { .name = "qwerty", .xkb_rule = &qwerty_layout },
+    { .name = "dvorak", .xkb_rule = &dvorak_layout },
 };
 
 static const int repeat_rate = 25;

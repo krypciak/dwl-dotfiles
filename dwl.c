@@ -255,6 +255,7 @@ static void commitlayersurfacenotify(struct wl_listener *listener, void *data);
 static void commitnotify(struct wl_listener *listener, void *data);
 static void createidleinhibitor(struct wl_listener *listener, void *data);
 static void createkeyboard(struct wlr_input_device *device);
+static void setkeyboardlayout(unsigned int index);
 static void togglekeyboardlayout(const Arg *arg);
 static void createlayersurface(struct wl_listener *listener, void *data);
 static void createmon(struct wl_listener *listener, void *data);
@@ -1042,6 +1043,7 @@ createidleinhibitor(struct wl_listener *listener, void *data)
 void
 createkeyboard(struct wlr_input_device *device)
 {
+    char cmd[50];
 	struct xkb_context *context;
 	struct xkb_keymap *keymap;
 	Keyboard *kb = device->data = ecalloc(1, sizeof(*kb));
@@ -1049,7 +1051,7 @@ createkeyboard(struct wlr_input_device *device)
 
 	/* Prepare an XKB keymap and assign it to the keyboard. */
 	context = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
-	keymap = xkb_keymap_new_from_names(context, xkb_rules[default_keyboard_layout],
+	keymap = xkb_keymap_new_from_names(context, keyboard_layouts[default_keyboard_layout].xkb_rule,
 		XKB_KEYMAP_COMPILE_NO_FLAGS);
 
 	wlr_keyboard_set_keymap(device->keyboard, keymap);
@@ -1066,6 +1068,9 @@ createkeyboard(struct wlr_input_device *device)
 
 	/* And add the keyboard to our list of keyboards */
 	wl_list_insert(&keyboards, &kb->link);
+
+    sprintf(cmd, "echo '%s' > /tmp/keyboard_layout", keyboard_layouts[default_keyboard_layout].name);
+    simplespawn_string_pipe(cmd, 0);
 }
 
 void
@@ -1075,24 +1080,26 @@ setkeyboardlayout(unsigned int index)
 	struct xkb_context *context;
 
     Keyboard *kb;
+    
+    char cmd[50];
 
     if (current_keyboard_layout_index == index) return;
 
     current_keyboard_layout_index = index;
 
 	context = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
-	keymap = xkb_keymap_new_from_names(context, xkb_rules[index],
+	keymap = xkb_keymap_new_from_names(context, keyboard_layouts[index].xkb_rule,
 		XKB_KEYMAP_COMPILE_NO_FLAGS);
 
 
     wl_list_for_each(kb, &keyboards, link) {
 	    wlr_keyboard_set_keymap(kb->device->keyboard, keymap);
-	    //xkb_keymap_unref(keymap);
-	    //xkb_context_unref(context);
-	    wlr_keyboard_set_repeat_info(kb->device->keyboard, repeat_rate, repeat_delay);
     }
 	xkb_keymap_unref(keymap);
 	xkb_context_unref(context);
+
+    sprintf(cmd, "echo '%s' > /tmp/keyboard_layout", keyboard_layouts[index].name);
+    simplespawn_string_pipe(cmd, 0);
 
     //char  cmd[200];
     //sprintf(cmd, "echo 'changed layout: %d' >> ~/log.txt", index);
@@ -1890,9 +1897,6 @@ keypressmod(struct wl_listener *listener, void *data)
 	/* This event is raised when a modifier key, such as shift or alt, is
 	 * pressed. We simply communicate this to the client. */
 	Keyboard *kb = wl_container_of(listener, kb, modifiers);
-
-	struct wlr_event_keyboard_key *event = data;
-    
 
     /* Make sure the keyboard layout is qwerty when pressing a modkey */
     uint32_t mods = wlr_keyboard_get_modifiers(kb->device->keyboard);
