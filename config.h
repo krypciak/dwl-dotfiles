@@ -79,6 +79,7 @@ static const MonitorRule monrules[] = {
 };
 
 /* keyboard layouts */
+static const int default_keyboard_layout = 0;
 
 static const struct xkb_rule_names dvorak_layout = {
     //.layout = "us",
@@ -96,6 +97,7 @@ static const struct xkb_rule_names qwerty_layout = {
 };
 
 
+/* The first index has to be a qwerty layout */
 static const struct xkb_rule_names *xkb_rules[2] = {
     &qwerty_layout,
     &dvorak_layout,
@@ -340,7 +342,7 @@ static const Key keys[] = {
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_L,          simplespawn,    {.v = "playerctl pause -a; swaylock" } },
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_K,          simplespawn,    {.v = "playerctl pause -a; $HOME/.config/dwl/dpms-off/target/release/dpms-off && swaylock" } },
 
-    { SUPER|CTRL,               XKB_KEY_q,          togglekeyboardlayout, {0} },
+    { CAPS,                     XKB_KEY_2,          togglekeyboardlayout, {0} },
 
 
 #define CHVT(n) { CTRL|ALT,XKB_KEY_XF86Switch_VT_##n, chvt, {.ui = (n)} }

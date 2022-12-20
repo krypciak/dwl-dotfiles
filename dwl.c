@@ -329,7 +329,8 @@ static void setup(void);
 static void sigchld(int unused);
 static void spawn(const Arg *arg);
 static void simplespawn(const Arg *arg);
-static int  simplespawnstring(const char *cmd);
+static int  simplespawn_string(const char *cmd);
+static int  simplespawn_string_pipe(const char *cmd, bool pipe);
 static void startdrag(struct wl_listener *listener, void *data);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
@@ -497,7 +498,7 @@ applybounds(Client *c, struct wlr_box *bbox)
     { \
         void *thread_func(void *data12) { \
             sleep(SECONDS); \
-            simplespawnstring(CMD); \
+            simplespawn_string(CMD); \
             return NULL; \
         } \
         pthread_t wait_thread; \
@@ -509,7 +510,6 @@ applybounds(Client *c, struct wlr_box *bbox)
         void *thread_func(void *data12) { \
             sleep(SECONDS); \
             for(int ite = 0; ite < LENGTH(ARRAY); ite++) { \
-                simplespawnstring(ARRAY[ite]); \
             } \
             return NULL; \
         } \
@@ -818,7 +818,7 @@ buttonpress(struct wl_listener *listener, void *data)
 
     if(event->button == 276) {
         switch(event->state) {
-        case WLR_BUTTON_PRESSED:  simplespawnstring("amixer set Capture cap"); break;
+        case WLR_BUTTON_PRESSED:  simplespawn_string("amixer set Capture cap"); break;
         case WLR_BUTTON_RELEASED: async_sleep_simplespawn(0.4, "amixer set Capture nocap"); break;
         }
     }
@@ -1592,7 +1592,7 @@ getclientinfo(const Arg *arg)
 	Client *c = selclient();
 
     if(c == NULL) {
-        simplespawnstring("zenity --info --text 'null'"); 
+        simplespawn_string("zenity --info --text 'null'"); 
         return; 
     }
 
@@ -1608,7 +1608,7 @@ getclientinfo(const Arg *arg)
 
     sprintf(cmd, "zenity --info --text 'Title: %s\nClass: %s\n'", title, appid);
     
-    simplespawnstring(cmd);
+    simplespawn_string(cmd);
 
     free(cmd);
 }
@@ -2348,7 +2348,7 @@ void
     int pids[len];
     
     for(i = 0; i < len; i++) {
-        pids[i] = simplespawnstring(at_exit[i]);
+        pids[i] = simplespawn_string(at_exit[i]);
     }
     
     for(i = 0; i < len; i++) {
@@ -2889,11 +2889,17 @@ spawn(const Arg *arg)
 
 void
 simplespawn(const Arg *arg) {
-    simplespawnstring(arg->v);
+    simplespawn_string(arg->v);
 }
 
 int
-simplespawnstring(const char *cmd) 
+simplespawn_string(const char *cmd) 
+{
+    return simplespawn_string_pipe(cmd, 1);
+}
+
+int
+simplespawn_string_pipe(const char *cmd, bool pipe) 
 {
     char *tmp1;
     int pid;
@@ -2902,8 +2908,10 @@ simplespawnstring(const char *cmd)
     tmp1[0] = '\0';
     strcat(tmp1, "''");
     strcat(tmp1, cmd);
-    strcat(tmp1, " > /dev/null 2>&1''");
-    //strcat(tmp1, "''");
+    if (pipe) 
+        strcat(tmp1, " > /dev/null 2>&1''"); 
+     else 
+         strcat(tmp1, "''"); 
 
 
 
@@ -2918,13 +2926,13 @@ simplespawnstring(const char *cmd)
 }
 
 #define simplespawn_if_not_running(TORUN) \
-          simplespawnstring("[ \"$(pgrep " TORUN ")\" == \"\" ] && " TORUN);
+          simplespawn_string("[ \"$(pgrep " TORUN ")\" == \"\" ] && " TORUN);
 
 #define simplespawn_if_not_running1(TORUN, APP1) \
-          simplespawnstring("[ \"$(pgrep " APP1 ")\" == \"\" ] && " TORUN);
+          simplespawn_string("[ \"$(pgrep " APP1 ")\" == \"\" ] && " TORUN);
 
 #define simplespawn_if_not_running2(TORUN, APP1, APP2) \
-          simplespawnstring("[ \"$(pgrep " APP1 ")\" == \"\" ] && [ \"$(pgrep " APP2 ")\" == \"\" ] && " TORUN);
+          simplespawn_string("[ \"$(pgrep " APP1 ")\" == \"\" ] && [ \"$(pgrep " APP2 ")\" == \"\" ] && " TORUN);
 
 void
 spawntagapps(unsigned int tag) 
