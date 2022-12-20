@@ -78,14 +78,27 @@ static const MonitorRule monrules[] = {
 	{ NULL,       0.5, 1,      1,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL },
 };
 
-/* keyboard */
-static const struct xkb_rule_names xkb_rules = {
-	/* can specify fields: rules, model, layout, variant, options */
+/* keyboard layouts */
+
+static const struct xkb_rule_names dvorak_layout = {
     //.layout = "us",
-    //.variant = "dvorak",
+    .variant = "dvorak",
+    .layout = "pl",
+    // this is accually a workaround for using capslock as a modkey, caps:shiftlock is modified
+    .options = "caps:shiftlock",
+};
+
+static const struct xkb_rule_names qwerty_layout = {
+    //.layout = "us",
     .layout = "pl,us",
     // this is accually a workaround for using capslock as a modkey, caps:shiftlock is modified
-	.options = "caps:shiftlock",
+    .options = "caps:shiftlock",
+};
+
+
+static const struct xkb_rule_names *xkb_rules[2] = {
+    &qwerty_layout,
+    &dvorak_layout,
 };
 
 static const int repeat_rate = 25;
@@ -326,6 +339,8 @@ static const Key keys[] = {
     // locking
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_L,          simplespawn,    {.v = "playerctl pause -a; swaylock" } },
 	{ SUPER|CTRL|SHIFT,         XKB_KEY_K,          simplespawn,    {.v = "playerctl pause -a; $HOME/.config/dwl/dpms-off/target/release/dpms-off && swaylock" } },
+
+    { SUPER|CTRL,               XKB_KEY_q,          togglekeyboardlayout, {0} },
 
 
 #define CHVT(n) { CTRL|ALT,XKB_KEY_XF86Switch_VT_##n, chvt, {.ui = (n)} }

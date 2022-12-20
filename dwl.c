@@ -255,6 +255,7 @@ static void commitlayersurfacenotify(struct wl_listener *listener, void *data);
 static void commitnotify(struct wl_listener *listener, void *data);
 static void createidleinhibitor(struct wl_listener *listener, void *data);
 static void createkeyboard(struct wlr_input_device *device);
+static void togglekeyboardlayout(const Arg *arg);
 static void createlayersurface(struct wl_listener *listener, void *data);
 static void createmon(struct wl_listener *listener, void *data);
 static void createnotify(struct wl_listener *listener, void *data);
@@ -401,6 +402,8 @@ static struct wl_list mons;
 static Monitor *selmon;
 
 static int enablegaps = 1;   /* enables gaps, used by togglegaps */
+
+static int keyboardlayoutindex = 0;
 
 struct wlr_pointer_constraints_v1 *pointer_constraints;
 struct wlr_pointer_constraint_v1 *active_constraint;
@@ -1043,7 +1046,7 @@ createkeyboard(struct wlr_input_device *device)
 
 	/* Prepare an XKB keymap and assign it to the keyboard. */
 	context = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
-	keymap = xkb_keymap_new_from_names(context, &xkb_rules,
+	keymap = xkb_keymap_new_from_names(context, xkb_rules[0],
 		XKB_KEYMAP_COMPILE_NO_FLAGS);
 
 	wlr_keyboard_set_keymap(device->keyboard, keymap);
@@ -1060,6 +1063,39 @@ createkeyboard(struct wlr_input_device *device)
 
 	/* And add the keyboard to our list of keyboards */
 	wl_list_insert(&keyboards, &kb->link);
+}
+
+void
+setkeyboardlayout(const struct xkb_rule_names *xkb_rule)
+{
+	struct xkb_keymap *keymap;
+	struct xkb_context *context;
+
+    Keyboard *kb;
+
+	context = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
+	keymap = xkb_keymap_new_from_names(context, xkb_rule,
+		XKB_KEYMAP_COMPILE_NO_FLAGS);
+
+
+    wl_list_for_each(kb, &keyboards, link) {
+	    wlr_keyboard_set_keymap(kb->device->keyboard, keymap);
+	    //xkb_keymap_unref(keymap);
+	    //xkb_context_unref(context);
+	    wlr_keyboard_set_repeat_info(kb->device->keyboard, repeat_rate, repeat_delay);
+    }
+	xkb_keymap_unref(keymap);
+	xkb_context_unref(context);
+}
+
+void
+togglekeyboardlayout(const Arg *arg)
+{
+    keyboardlayoutindex++;
+    if(keyboardlayoutindex >= 2) 
+        keyboardlayoutindex = 0;
+
+    setkeyboardlayout(xkb_rules[keyboardlayoutindex]);
 }
 
 void
@@ -1555,7 +1591,10 @@ getclientinfo(const Arg *arg)
 	char *title, *appid, *cmd = malloc(sizeof(char)*150);
 	Client *c = selclient();
 
-    if(c == NULL) return;
+    if(c == NULL) {
+        simplespawnstring("zenity --info --text 'null'"); 
+        return; 
+    }
 
 	if ((title = (char*) client_get_title(c)))
         escape(title);
