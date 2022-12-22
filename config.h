@@ -56,7 +56,7 @@ static const Rule rules[] = {
     { "Steam",                NULL,   1 << 13,    0,  0,  0,  0,  0,  0,  -1 },
     { "Lutris",               NULL,   1 << 13,    0,  0,  0,  0,  0,  0,  -1 },
     { "steap_app_960090",     NULL,   1 << 13,    0,  0,  0,  0,  0,  0,  -1 },
-    { "CrossCode",            NULL,   1 << 13,    0,  0,  1,  0,  0,  0,  -1 },
+    { NULL,            "CrossCode",   1 << 13,    0,  0,  1,  0,  0,  0,  -1 },
 };
 
 /* layout(s) */
