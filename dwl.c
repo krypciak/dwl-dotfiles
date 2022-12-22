@@ -2983,7 +2983,7 @@ spawntagapps(unsigned int tag)
           simplespawn_if_not_running("icecat");
           break;
       case 1 << 6:
-          simplespawn_if_not_running("chromium");
+          simplespawn_if_not_running1("chromium --ozone-platform-hint=auto", "chromium");
           break;
       case 1 << 7:
           simplespawn_if_not_running2("tutanota-desktop", "tutanota-desktop", "aerc");
