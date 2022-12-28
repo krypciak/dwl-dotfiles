@@ -57,6 +57,10 @@ static const Rule rules[] = {
     { "Lutris",               NULL,   1 << 13,    0,  0,  0,  0,  0,  0,  -1 },
     { "steap_app_960090",     NULL,   1 << 13,    0,  0,  0,  0,  0,  0,  -1 },
     { NULL,            "CrossCode",   1 << 13,    0,  0,  1,  0,  0,  0,  -1 },
+    { "MonkeyCity-Win.exe",   NULL,   1 << 13,    0,  0,  1,  0,  0,  0,  -1 },
+    { NULL,   "Bloons Monkey City",   1 << 13,    0,  0,  1,  0,  0,  0,  -1 },
+
+
 };
 
 /* layout(s) */
