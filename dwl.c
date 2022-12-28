@@ -405,9 +405,6 @@ static Monitor *selmon;
 
 static int enablegaps = 1;   /* enables gaps, used by togglegaps */
 
-static int current_keyboard_layout_index = 0;
-static int selected_keyboard_layout_index = 0;
-static int prev_keyboard_layout_index = 0;
 
 struct wlr_pointer_constraints_v1 *pointer_constraints;
 struct wlr_pointer_constraint_v1 *active_constraint;
@@ -454,6 +451,10 @@ static Atom netatom[NetLast];
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
+
+static int current_keyboard_layout_index = default_keyboard_layout;
+static int selected_keyboard_layout_index = default_keyboard_layout;
+static int prev_keyboard_layout_index = 0;
 
 /* attempt to encapsulate suck into one file */
 #include "client.h"
@@ -2980,7 +2981,7 @@ spawntagapps(unsigned int tag)
           simplespawn_if_not_running("discord");
           break;
       case 1 << 5:
-          simplespawn_if_not_running("icecat");
+          simplespawn_if_not_running("librewolf");
           break;
       case 1 << 6:
           simplespawn_if_not_running1("chromium --ozone-platform-hint=auto", "chromium");
@@ -2992,8 +2993,8 @@ spawntagapps(unsigned int tag)
           simplespawn_if_not_running("dialect");
           break;
       case 1 << 9:
-          simplespawn_if_not_running1("[ $(ps aux | grep invidious | wc -l) -lt 4 ] && env XAPP_FORCE_GTKWINDOW_ICON=~/.local/share/ice/icons/Invidious.png firefox --class invidious --profile ~/.local/share/ice/firefox/invidious --no-remote https://invidious.sethforprivacy.com/", "lbry");
-          break;
+          simplespawn_if_not_running2("[ $(ps aux | grep invidious | wc -l) -t 4 ] && env XAPP_FORCE_GTKWINDOW_ICON=~/.local/share/ice/icons/Invidious.png firefox --class invidious --profile ~/.local/share/ice/firefox/invidious --no-remote https://invidious.sethforprivacy.com/", "lbry", "freetube");
+          break;                                                                                                                   
       case 1 << 10:
           simplespawn_if_not_running2("prismlauncher", "PrismLauncher", "Minecraft*");
           break;
