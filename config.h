@@ -36,7 +36,7 @@ static const Rule rules[] = {
     
     { "cmus",                 NULL,   1 << 3,     0,  0,  0,  0,  0,  0,  -1 },
     { "discord",              NULL,   1 << 4,     1,  0,  0,  0,  0,  0,  -1 },
-    { "icecat",               NULL,   1 << 5,     0,  0,  0,  0,  0,  0,  -1 },
+    { "librewolf",            NULL,   1 << 5,     0,  0,  0,  0,  0,  0,  -1 },
     { "Chromium",             NULL,   1 << 6,     0,  0,  0,  0,  0,  0,  -1 },
     { "tutanota-desktop",     NULL,   1 << 7,     0,  0,  0,  0,  0,  0,  -1 },
     { "aerc",                 NULL,   1 << 7,     0,  0,  0,  0,  0,  0,  -1 },
