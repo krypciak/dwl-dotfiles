@@ -83,7 +83,7 @@ static const MonitorRule monrules[] = {
 };
 
 /* keyboard layouts */
-static const int default_keyboard_layout = 0;
+static const int default_keyboard_layout = 1;
 
 static struct xkb_rule_names dvorak_layout = {
     //.layout = "us",
