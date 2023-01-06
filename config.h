@@ -43,6 +43,7 @@ static const Rule rules[] = {
     { "dialect",              NULL,   1 << 8,     0,  0,  0,  0,  0,  0,  -1 },
     { NULL,            "Invidious",   1 << 9,     0,  0,  0,  0,  0,  0,  -1 },
     { "LBRY",                 NULL,   1 << 9,     0,  0,  0,  0,  0,  0,  -1 },
+    { "FreeTube",             NULL,   1 << 9,     0,  0,  0,  0,  0,  0,  -1 },
     { "prismlauncher",        NULL,   1 << 10,    0,  0,  0,  0,  0,  0,  -1 },
     { NULL,            "Minecraft",   1 << 10,    0,  0,  0,  1,  0,  0,  -1 },
     { "gamescope",            NULL,   1 << 12,    0,  0,  1,  0,  0,  0,  -1 },
