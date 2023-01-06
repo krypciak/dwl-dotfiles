@@ -2987,7 +2987,7 @@ spawntagapps(unsigned int tag)
           simplespawn_if_not_running1("chromium --ozone-platform-hint=auto", "chromium");
           break;
       case 1 << 7:
-          simplespawn_if_not_running2("tutanota-desktop", "tutanota-desktop", "aerc");
+          simplespawn_if_not_running2("tutanota-desktop --enable-features=useozoneplatform --ozone-platform=wayland", "tutanota-desktop", "aerc");
           break;
       case 1 << 8:
           simplespawn_if_not_running("dialect");

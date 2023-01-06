@@ -174,7 +174,7 @@ static const char *autostart_execute[] = {
 
 static const char *autostart_simplespawn_2s[] = { 
     "[ \"$(pgrep keepassxc)\" == \"\" ] && keepassxc",
-    "[ \"$(pgrep tutanota-deskop)\" == \"\" ] && tutanota-desktop",
+    "[ \"$(pgrep tutanota-deskop)\" == \"\" ] && tutanota-desktop --enable-features=UseOzonePlatform --ozone-platform=wayland",
     "blueman-applet",
 };
 
