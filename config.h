@@ -5,8 +5,16 @@
 #define CAPS WLR_MODIFIER_MOD3
 
 /* appearance */
-static const int sloppyfocus        = 0;  /* focus follows mouse */
-static const unsigned int borderpx  = 1;  /* border pixel of windows */
+static const int sloppyfocus               = 0;  /* focus follows mouse */
+static const int bypass_surface_visibility = 0;  /* 1 means idle inhibitors will disable idle tracking even if it's surface isn't visible  */
+static const unsigned int borderpx         = 1;  /* border pixel of windows */
+static const float rootcolor[]             = {0.3, 0.3, 0.3, 1.0};
+static const float bordercolor[]           = {0.5, 0.5, 0.5, 1.0};
+static const float focuscolor[]            = {1.0, 0.0, 0.0, 1.0};
+/* To conform the xdg-protocol, set the alpha to zero to restore the old behavior */
+static const float fullscreen_bg[]         = {0.1, 0.1, 0.1, 1.0};
+
+
 
 static const unsigned int gappih    = 10;       /* horiz inner gap between windows */
 static const unsigned int gappiv    = 10;       /* vert inner gap between windows */
@@ -16,19 +24,14 @@ static const int smartgaps          = 0;        /* 1 means no outer gap when the
 static const int monoclegaps        = 0;        /* 1 means outer gaps in monocle layout */
 static const int smartborders       = 1;
 
+
 static const int lockfullscreen     = 1;  /* 1 will force focus on the fullscreen window */
-static const float rootcolor[]      = {0.3, 0.3, 0.3, 1.0};
-static const float bordercolor[]    = {0.5, 0.5, 0.5, 1.0};
-static const float focuscolor[]     = {1.0, 0.0, 0.0, 1.0};
-/* To conform the xdg-protocol, set the alpha to zero to restore the old behavior */
-static const float fullscreen_bg[]  = {0.1, 0.1, 0.1, 0};
 
 /* tagging */
 static const char *tags[] = {
     "T", "q", "w", "n", "d", "s", "a", "z",
     "t", "f", "c", "g", "v", "h"
 };
-
 
 static const Rule rules[] = {
 	/* app_id                 title   tags mask   iscentered isfloating isfullscreen ismaximilized isterm noswallow  monitor */
@@ -67,7 +70,7 @@ static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },
 	{ "><>",      NULL },    /* no layout function means floating behavior */
-	//{ "[M]",      monocle },
+	{ "[M]",      monocle },
     { NULL,       NULL },
 };
 
@@ -151,8 +154,25 @@ static const enum libinput_config_accel_profile accel_profile = LIBINPUT_CONFIG_
 static const double accel_speed = 0.0;
 static const int cursor_timeout = 2;
 
-/* pointer constraints */
-static const int allow_constrain      = 1;
+/* You can choose between:
+LIBINPUT_CONFIG_TAP_MAP_LRM -- 1/2/3 finger tap maps to left/right/middle
+LIBINPUT_CONFIG_TAP_MAP_LMR -- 1/2/3 finger tap maps to left/middle/right
+*/
+static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TAP_MAP_LRM;
+
+#define TAGKEYS(KEY,SKEY,TAG) \
+	{ ALT,                KEY,            view,            {.ui = 1 << TAG} }, \
+	{ ALT|CTRL,           KEY,            toggleview,      {.ui = 1 << TAG} }, \
+	{ ALT|SHIFT,          SKEY,           tag,             {.ui = 1 << TAG} }, \
+	{ ALT|CTRL|SHIFT,     SKEY,           toggletag,       {.ui = 1 << TAG} }
+
+
+
+#define PLAYERCTL_SCRIPT "luajit $HOME/.config/dotfiles/scripts/playerctl.lua "
+#define PLAYERCTL_KEY(KEY,SHIFT_KEY,ACTION) \
+	{ CAPS,                    KEY,                 simplespawn,     {.v = PLAYERCTL_SCRIPT "\"" ACTION "\" 1"} }, \
+	{ CAPS|SHIFT,              SHIFT_KEY,           simplespawn,     {.v = PLAYERCTL_SCRIPT "\"" ACTION "\" 2"} }
+
 
 /* Autostart */
 static const char *autostart_simplespawn[] = {
@@ -187,18 +207,7 @@ static const char *const at_exit[] = {
     "pkill gnome-keyring",
 };
 
-#define TAGKEYS(KEY,SKEY,TAG) \
-	{ ALT,                KEY,            view,            {.ui = 1 << TAG} }, \
-	{ ALT|CTRL,           KEY,            toggleview,      {.ui = 1 << TAG} }, \
-	{ ALT|SHIFT,          SKEY,           tag,             {.ui = 1 << TAG} }, \
-	{ ALT|CTRL|SHIFT,     SKEY,           toggletag,       {.ui = 1 << TAG} }
 
-
-
-#define PLAYERCTL_SCRIPT "luajit $HOME/.config/dotfiles/scripts/playerctl.lua "
-#define PLAYERCTL_KEY(KEY,SHIFT_KEY,ACTION) \
-	{ CAPS,                    KEY,                 simplespawn,     {.v = PLAYERCTL_SCRIPT "\"" ACTION "\" 1"} }, \
-	{ CAPS|SHIFT,              SHIFT_KEY,           simplespawn,     {.v = PLAYERCTL_SCRIPT "\"" ACTION "\" 2"} }
 
 static const Key keys[] = {
 	/* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
@@ -317,13 +326,6 @@ static const Key keys[] = {
     //{SUPER,                     XKB_KEY_t,          always on top
 	{ SUPER,                    XKB_KEY_s,          togglesticky,   {0} },
     { SUPER,                    XKB_KEY_m,          togglemaximilized, {0} },
-    
-
-
-    // screen
-    // next screen
-    // prev screen
-    //{ CAPS,                     XKB_KEY_v,          
     
     // screenshot
     { CAPS,                     XKB_KEY_z,          simplespawn,    {.v = "grim - | wl-copy" } },
