@@ -425,6 +425,10 @@ static struct wlr_session_lock_manager_v1 *session_lock_mgr;
 static struct wlr_scene_rect *locked_bg;
 static struct wlr_session_lock_v1 *cur_lock;
 
+static struct wlr_session_lock_manager_v1 *session_lock_mgr;
+static struct wlr_scene_rect *locked_bg;
+static struct wlr_session_lock_v1 *cur_lock;
+
 static struct wlr_seat *seat;
 static struct wl_list keyboards;
 static unsigned int cursor_mode;
@@ -721,6 +725,7 @@ axisnotify(struct wl_listener *listener, void *data)
 	struct wlr_pointer_axis_event *event = data;
 	IDLE_NOTIFY_ACTIVITY;
 	handlecursoractivity(true);
+
 	/* TODO: allow usage of scroll whell for mousebindings, it can be implemented
 	 * checking the event's orientation and the delta of the event */
 	/* Notify the client with pointer focus of the axis event. */
@@ -2182,6 +2187,7 @@ maximizenotify(struct wl_listener *listener, void *data)
 	wlr_xdg_surface_schedule_configure(c->surface.xdg);
 }
 
+
 __attribute__((unused))
 void
 monocle(Monitor *m)
@@ -2319,6 +2325,19 @@ motionnotify(uint32_t time, struct wlr_input_device *device, double dx, double d
 		resize(grabc, (struct wlr_box){.x = grabc->geom.x, .y = grabc->geom.y,
 			.width = cursor->x - grabc->geom.x, .height = cursor->y - grabc->geom.y}, 1, 1);
 		return;
+	}
+
+	/* Find the client under the pointer and send the event along. */
+	xytonode(cursor->x, cursor->y, &surface, &c, NULL, &sx, &sy);
+
+	if (cursor_mode == CurPressed && !seat->drag) {
+		if ((type = toplevel_from_wlr_surface(
+				 seat->pointer_state.focused_surface, &w, &l)) >= 0) {
+			c = w;
+			surface = seat->pointer_state.focused_surface;
+			sx = cursor->x - (type == LayerShell ? l->geom.x : w->geom.x);
+			sy = cursor->y - (type == LayerShell ? l->geom.y : w->geom.y);
+		}
 	}
 
 	/* If there's no client surface under the cursor, set the cursor image to a
