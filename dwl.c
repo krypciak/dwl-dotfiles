@@ -1831,6 +1831,9 @@ handlecursoractivity(bool restore_focus)
 int
 hidecursor(void *data)
 {
+    Client *c;
+    if ((c = focustop(selmon)) && c->isfullscreen) return 1;
+
 	wlr_cursor_set_image(cursor, NULL, 0, 0, 0, 0, 0, 0);
 	wlr_seat_pointer_notify_clear_focus(seat);
 	cursor_hidden = true;
