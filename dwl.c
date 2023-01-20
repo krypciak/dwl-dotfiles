@@ -231,6 +231,7 @@ typedef struct {
     int ismaximilized;
 	int isterm;
 	int noswallow;
+    int issticky;
 	int monitor;
 } Rule;
 
