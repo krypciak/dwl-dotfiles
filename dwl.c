@@ -621,6 +621,7 @@ applyrules(Client *c)
 			c->noswallow  = r->noswallow;
 			c->isfullscreen = r->isfullscreen;
 			c->ismaximilized = r->ismaximilized;
+            c->issticky = r->issticky;
 			newtags |= r->tags;
 			i = 0;
 			wl_list_for_each(m, &mons, link)
@@ -1832,7 +1833,7 @@ int
 hidecursor(void *data)
 {
     Client *c;
-    if ((c = focustop(selmon)) && c->isfullscreen) return 1;
+    if ((c = focustop(selmon)) && (c->isfullscreen || c->ismaximilized)) return 1;
 
 	wlr_cursor_set_image(cursor, NULL, 0, 0, 0, 0, 0, 0);
 	wlr_seat_pointer_notify_clear_focus(seat);
@@ -2775,6 +2776,13 @@ setgaps(int oh, int ov, int ih, int iv)
 	arrange(selmon);
 }
 
+void 
+setgaps_single(const Arg *arg)
+{
+    setgaps(arg->ui, arg->ui, arg->ui, arg->ui);
+}
+
+
 void
 setlayout(const Arg *arg)
 {
@@ -3148,7 +3156,7 @@ spawntagapps(unsigned int tag)
           simplespawn_if_not_running("virt-manager");
           break;
       case 1 << 12:
-          simplespawn_if_not_running1("env AMD_VULKAN_ICD=RADV gamescope -w 2560 -h 1440 -f -- lutris lutris:rungameid/1", "gamescope");
+            //simplespawn_if_not_running1("env AMD_VULKAN_ICD=RADV gamescope -w 2560 -h 1440 -f -- lutris lutris:rungameid/1", "gamescope");
           break;
     }
 }
