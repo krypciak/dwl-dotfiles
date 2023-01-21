@@ -7,7 +7,6 @@
 /* appearance */
 static const int sloppyfocus               = 0;  /* focus follows mouse */
 static const int bypass_surface_visibility = 0;  /* 1 means idle inhibitors will disable idle tracking even if it's surface isn't visible  */
-static const unsigned int borderpx         = 1;  /* border pixel of windows */
 static const float rootcolor[]             = {0.3, 0.3, 0.3, 1.0};
 static const float bordercolor[]           = {0.5, 0.5, 0.5, 1.0};
 static const float focuscolor[]            = {1.0, 0.0, 0.0, 1.0};
@@ -15,11 +14,15 @@ static const float focuscolor[]            = {1.0, 0.0, 0.0, 1.0};
 static const float fullscreen_bg[]         = {0.1, 0.1, 0.1, 1.0};
 
 
+static unsigned int borderpx         = 0;  /* border pixel of windows */
+static const unsigned int default_borderpx = 1;  /* second state of borderpx */
 
-static const unsigned int gappih    = 3;       /* horiz inner gap between windows */
-static const unsigned int gappiv    = 3;       /* vert inner gap between windows */
-static const unsigned int gappoh    = 3;       /* horiz outer gap between windows and screen edge */
-static const unsigned int gappov    = 3;       /* vert outer gap between windows and screen edge */
+static const unsigned int gappih    = 0;       /* horiz inner gap between windows */
+static const unsigned int gappiv    = 0;       /* vert inner gap between windows */
+static const unsigned int gappoh    = 0;       /* horiz outer gap between windows and screen edge */
+static const unsigned int gappov    = 0;       /* vert outer gap between windows and screen edge */
+static const unsigned int default_gapps = 0;  /* second state of gapp size */
+
 static const int smartgaps          = 1;        /* 1 means no outer gap when there is only one window */
 static const int monoclegaps        = 0;        /* 1 means outer gaps in monocle layout */
 static const int smartborders       = 1;
@@ -273,6 +276,13 @@ static const Key keys[] = {
     // gaps
     { CAPS,                     XKB_KEY_y,          incgaps,        {.i = +1} },
     { CAPS,                     XKB_KEY_h,          incgaps,        {.i = -1} },
+    
+    { CAPS|SHIFT,               XKB_KEY_Y,          setgaps_single, {.i = default_gapps } },
+    { CAPS|SHIFT,               XKB_KEY_H,          setgaps_single, {.i = 0 } },
+
+    { CAPS|CTRL,                XKB_KEY_y,          setborder,      {.ui = default_gapps } },
+    { CAPS|CTRL,                XKB_KEY_h,          setborder,      {.ui = 0 } },
+
 
     // walpaper
     { CAPS,                     XKB_KEY_t,          simplespawn,    {.v = WALLPAPER_SCRIPT "1 0" } },
