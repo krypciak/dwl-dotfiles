@@ -279,7 +279,6 @@ static void cursorconstrain(struct wlr_pointer_constraint_v1 *constraint);
 static void cursorframe(struct wl_listener *listener, void *data);
 static void cursorwarptoconstrainthint(void);
 static void cyclelayout(const Arg *arg);
-static void defaultgaps(const Arg *arg);
 static void destroydragicon(struct wl_listener *listener, void *data);
 static void destroyidleinhibitor(struct wl_listener *listener, void *data);
 static void destroylayersurfacenotify(struct wl_listener *listener, void *data);
@@ -338,10 +337,12 @@ static void rendermon(struct wl_listener *listener, void *data);
 static void requeststartdrag(struct wl_listener *listener, void *data);
 static void resize(Client *c, struct wlr_box geo, int interact, int draw_borders);
 static void run(char *startup_cmd);
+static void setborder(const Arg *arg);
 static void setcursor(struct wl_listener *listener, void *data);
 static void setfloating(Client *c, int floating);
 static void setfullscreen(Client *c, int fullscreen);
 static void setgaps(int oh, int ov, int ih, int iv);
+static void setgaps_single(const Arg *arg);
 static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
 static void setmon(Client *c, Monitor *m, unsigned int newtags);
@@ -2715,6 +2716,13 @@ run(char *startup_cmd)
 }
 
 void
+setborder(const Arg *arg)
+{
+    borderpx = arg->ui;
+    tile(selmon);
+}
+
+void
 setcursor(struct wl_listener *listener, void *data)
 {
 	/* This event is raised by the seat when a client provides a cursor image */
@@ -2777,12 +2785,11 @@ setgaps(int oh, int ov, int ih, int iv)
 	arrange(selmon);
 }
 
-void 
+void
 setgaps_single(const Arg *arg)
 {
-    setgaps(arg->ui, arg->ui, arg->ui, arg->ui);
+    setgaps(arg->i, arg->i, arg->i, arg->i);
 }
-
 
 void
 setlayout(const Arg *arg)
