@@ -76,12 +76,14 @@ static const Layout layouts[] = {
 
 /* monitors */
 static const MonitorRule monrules[] = {
-	/* name       mfact nmaster scale layout       rotate/reflect */
-	/* example of a HiDPI laptop monitor:
-	{ "eDP-1",    0.5,  1,      2,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL },
+	/* name       mfact nmaster scale layout       rotate/reflect x y resx resy rate adaptive custom*/
+	/* example of a HiDPI laptop monitor at 120Hz:
+	{ "eDP-1",    0.5,  1,      2,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL, 0, 0, 0, 0, 120.000, 1, 0},
 	*/
 	/* defaults */
-	{ NULL,       0.5, 1,      1,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL },
+	{ NULL,       0.5, 1,      1,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL, 0, 0, 0, 0, 0, 0, 0},
+    { "HDMI-A-1", 0.5, 1,      1,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL, 0, 0, 0, 0, 144, 1, 0},
+
 };
 
 /* keyboard layouts */
@@ -176,7 +178,6 @@ static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TA
 
 /* Autostart */
 static const char *autostart_simplespawn[] = {
-    "wlr-randr --output HDMI-A-1 --mode 2560x1440@143.912003",
     "$HOME/.config/dwl/someblocks/someblocks",
     "pulseaudio --start",
     "wl-paste --watch cliphist store",
