@@ -3216,7 +3216,7 @@ spawntagapps(unsigned int tag)
           simplespawn_if_not_running2("[ $(ps aux | grep invidious | wc -l) -t 4 ] && env XAPP_FORCE_GTKWINDOW_ICON=~/.local/share/ice/icons/Invidious.png firefox --class invidious --profile ~/.local/share/ice/firefox/invidious --no-remote https://invidious.sethforprivacy.com/", "lbry", "freetube");
           break;                                                                                                                   
       case 1 << 10:
-          simplespawn_if_not_running2("prismlauncher", "PrismLauncher", "Minecraft*");
+          simplespawn_if_not_running2("prismlauncher", "prismlauncher", "Minecraft*");
           break;
       case 1 << 11:
           simplespawn_if_not_running("virt-manager");
