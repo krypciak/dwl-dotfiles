@@ -298,7 +298,7 @@ static const Key keys[] = {
     { CAPS|CTRL,                XKB_KEY_1,          simplespawn,    {.v = "rm $HOME/.cache/cliphist/db" } },
 
     { SUPER|ALT,                XKB_KEY_s,          simplespawn,    {.v = "pkill steam" } },
-    { SUPER|ALT,                XKB_KEY_v,          simplespawn,    {.v = "pkill -9 League && pkill -9 Riot" } },
+    { SUPER|ALT,                XKB_KEY_v,          simplespawn,    {.v = "pkill -9 gamescope; pkill Riot; pkill League; pkill lutris; pkill wine; pkill wine-preloader; pkill wine-device; pkill plugplay; pkill services.exe; pkill rpcss.exe; pkill svchost.exe" } },
     { SUPER|ALT,                XKB_KEY_y,          simplespawn,    {.v = "pkill lbry" } },
     { SUPER|ALT,                XKB_KEY_z,          simplespawn,    {.v = "pkill tutanota" } },
     { SUPER|ALT,                XKB_KEY_u,          simplespawn,    {.v = "pkill gammastep" } },
