@@ -215,9 +215,6 @@ static const Key keys[] = {
 	/* modifier                  key                 function        argument */
     { SUPER|CTRL,               XKB_KEY_Return,     zoom,           {0} },
 	
-    //{ SUPER,                    XKB_KEY_space,      setlayout,      {0} },
-	
-	{ SUPER|SHIFT,              XKB_KEY_parenright, tag,            {.ui = ~0} },
     // monitor
 	{ ALT,                      XKB_KEY_comma,      focusmon,       {.i = WLR_DIRECTION_LEFT} },
 	{ ALT,                      XKB_KEY_period,     focusmon,       {.i = WLR_DIRECTION_RIGHT} },
