@@ -63,6 +63,8 @@ static const Rule rules[] = {
     { NULL,            "CrossCode",   1 << 13,    0,  0,  1,  0,  0,   0,   0,  -1 },
     { "MonkeyCity-Win.exe",   NULL,   1 << 13,    0,  0,  1,  0,  0,   0,   0,  -1 },
     { NULL,   "Bloons Monkey City",   1 << 13,    0,  0,  1,  0,  0,   0,   0,  -1 },
+
+    { "Pinentry-gtk-2",      NULL,    0,          1,  1,  0,  0,  0,   1,   0,  -1 },
 };
 
 /* layout(s) */
