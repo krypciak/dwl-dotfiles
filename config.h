@@ -184,6 +184,11 @@ static const char *autostart_simplespawn[] = {
     "pulseaudio --start",
     "wl-paste --watch cliphist store",
     "amixer set Capture nocap",
+
+    "[ \"$(pgrep keepassxc)\" == \"\" ] && keepassxc",
+    "[ \"$(pgrep tutanota-deskop)\" == \"\" ] && tutanota-desktop --enable-features=UseOzonePlatform --ozone-platform=wayland",
+    "blueman-applet",
+
 };
 
 #define WALLPAPER_SCRIPT "luajit $HOME/.config/dotfiles/scripts/wallpaper.lua "
@@ -192,12 +197,6 @@ static const char *autostart_execute[] = {
     "swww init",
     WALLPAPER_SCRIPT "0 0",
     "gammastep -r" 
-};
-
-static const char *autostart_simplespawn_2s[] = { 
-    "[ \"$(pgrep keepassxc)\" == \"\" ] && keepassxc",
-    "[ \"$(pgrep tutanota-deskop)\" == \"\" ] && tutanota-desktop --enable-features=UseOzonePlatform --ozone-platform=wayland",
-    "blueman-applet",
 };
 
 static const char *const at_exit[] = {
