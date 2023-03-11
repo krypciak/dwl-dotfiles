@@ -44,7 +44,6 @@ static const Rule rules[] = {
     
     { "cmus",                 NULL,   1 << 3,     0,  0,  0,  0,  0,   0,   0,  -1 },
     { "discord",              NULL,   1 << 4,     1,  0,  0,  0,  0,   0,   0,  -1 },
-    { NULL,          " • Discord ",   1 << 4,     1,  0,  0,  0,  0,   0,   0,  -1 },
 
     { "LibreWolf",            NULL,   1 << 5,     0,  0,  0,  0,  0,   0,   0,  -1 },
     { "chromium",             NULL,   1 << 6,     0,  0,  0,  0,  0,   0,   0,  -1 },
@@ -67,6 +66,7 @@ static const Rule rules[] = {
     { NULL,   "Bloons Monkey City",   1 << 13,    0,  0,  1,  0,  0,   0,   0,  -1 },
 
     { "Pinentry-gtk-2",      NULL,    0,          1,  1,  0,  0,  0,   1,   0,  -1 },
+    { "krunner",             NULL,    0,          1,  1,  0,  0,  0,   1,   0,  -1 },
 };
 
 /* layout(s) */
@@ -290,7 +290,7 @@ static const Key keys[] = {
     { CAPS,                     XKB_KEY_g,          simplespawn,    {.v = WALLPAPER_SCRIPT "0 1" } },
     
     // launcher
-	{ ALT,                      XKB_KEY_r,          simplespawn,    {.v = "fuzzel --log-level=warning" } },
+	{ ALT,                      XKB_KEY_r,          simplespawn,    {.v = "krunner" } },
 	{ ALT,                      XKB_KEY_Return,     simplespawn,    {.v = "alacritty" } },
     // clipboard history view
     { CAPS,                     XKB_KEY_1,          simplespawn,    {.v = "cliphist list | fuzzel -d --log-level=none | cliphist decode | wl-copy" } },
