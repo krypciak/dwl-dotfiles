@@ -2611,15 +2611,19 @@ printstatus(void)
 {
 	Monitor *m = NULL;
 	Client *c;
-	unsigned int occ, urg, sel;
+	unsigned int occ, floating_clients, urg, sel;
 	const char *appid, *title;
 
 	wl_list_for_each(m, &mons, link) {
-		occ = urg = 0;
+		occ = floating_clients = urg = 0;
+
 		wl_list_for_each(c, &clients, link) {
 			if (c->mon != m)
 				continue;
 			occ |= c->tags;
+            if(c->isfloating)
+                floating_clients |= c->tags;
+
 			if (c->isurgent)
 				urg |= c->tags;
 		}
@@ -2640,7 +2644,7 @@ printstatus(void)
 		}
 
 		printf("%s selmon %u\n", m->wlr_output->name, m == selmon);
-		printf("%s tags %u %u %u %u\n", m->wlr_output->name, occ, m->tagset[m->seltags],
+		printf("%s tags %u %u %u %u %u\n", m->wlr_output->name, occ, floating_clients, m->tagset[m->seltags],
 				sel, urg);
 		printf("%s layout %s\n", m->wlr_output->name, m->lt[m->sellt]->symbol);
 	}
