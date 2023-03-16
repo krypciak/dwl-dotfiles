@@ -207,6 +207,7 @@ struct Monitor {
 	unsigned int tagset[2];
 	double mfact;
 	int nmaster;
+	char ltsymbol[16];
 };
 
 typedef struct {
@@ -532,7 +533,7 @@ applybounds(Client *c, struct wlr_box *bbox)
 		c->geom.width = MAX(min.width + (2 * (int)c->bw), c->geom.width);
 		c->geom.height = MAX(min.height + (2 * (int)c->bw), c->geom.height);
 		/* Some clients set their max size to INT_MAX, which does not violate the
-		 * protocol but its unnecesary, as they can set their max size to zero. */
+		 * protocol but it's unnecesary, as they can set their max size to zero. */
 		if (max.width > 0 && !(2 * c->bw > INT_MAX - max.width)) /* Checks for overflow */
 			c->geom.width = MIN(max.width + (2 * c->bw), c->geom.width);
 		if (max.height > 0 && !(2 * c->bw > INT_MAX - max.height)) /* Checks for overflow */
@@ -664,6 +665,8 @@ arrange(Monitor *m)
 	wlr_scene_node_set_enabled(&m->fullscreen_bg->node,
 			(c = focustop(m)) && c->isfullscreen);
 
+	if (m)
+		strncpy(m->ltsymbol, m->lt[m->sellt]->symbol, LENGTH(m->ltsymbol));
 	if (m && m->lt[m->sellt]->arrange)
 		m->lt[m->sellt]->arrange(m);
 	motionnotify(0, NULL, 0, 0, 0, 0);
@@ -1313,6 +1316,7 @@ createmon(struct wl_listener *listener, void *data)
 		wlr_output_layout_add_auto(output_layout, wlr_output);
 	else
 		wlr_output_layout_add(output_layout, wlr_output, m->m.x, m->m.y);
+	strncpy(m->ltsymbol, m->lt[m->sellt]->symbol, LENGTH(m->ltsymbol));
 }
 
 void
@@ -2297,16 +2301,22 @@ void
 monocle(Monitor *m)
 {
 	Client *c;
+	int n = 0;
 
 	wl_list_for_each(c, &clients, link) {
 		if (!VISIBLEON(c, m) || c->isfloating || c->isfullscreen)
 			continue;
+
 		if (!monoclegaps)
 			resize(c, m->w, 0, 1); 
         else
 			resize(c, (struct wlr_box){.x = m->w.x + gappoh, .y = m->w.y + gappov,
 				.width = m->w.width - 2 * gappoh, .height = m->w.height - 2 * gappov}, 0, 1);
+
+		n++;
 	}
+	if (n)
+		snprintf(m->ltsymbol, LENGTH(m->ltsymbol), "[%d]", n);
 	if ((c = focustop(m)))
 		wlr_scene_node_raise_to_top(&c->scene->node);
 }
@@ -2646,7 +2656,7 @@ printstatus(void)
 		printf("%s selmon %u\n", m->wlr_output->name, m == selmon);
 		printf("%s tags %u %u %u %u %u\n", m->wlr_output->name, occ, floating_clients, m->tagset[m->seltags],
 				sel, urg);
-		printf("%s layout %s\n", m->wlr_output->name, m->lt[m->sellt]->symbol);
+		printf("%s layout %s\n", m->wlr_output->name, m->ltsymbol);
 	}
 	fflush(stdout);
 }
@@ -2917,6 +2927,8 @@ setlayout(const Arg *arg)
 			resize(c, c->mon->m, 0, 1);
 	}
 	/* TODO change layout symbol? */
+	strncpy(selmon->ltsymbol, selmon->lt[selmon->sellt]->symbol, LENGTH(selmon->ltsymbol));
+
 	arrange(selmon);
 	printstatus();
 }
