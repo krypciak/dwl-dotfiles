@@ -3257,7 +3257,7 @@ spawntagapps(unsigned int tag)
           simplespawn_if_not_running1("alacritty --class cmus --title cmus -e cmus", "cmus");
         break;
       case 1 << 4:
-          simplespawn_if_not_running("discord");
+          //simplespawn_if_not_running("discord");
           break;
       case 1 << 5:
           simplespawn_if_not_running("librewolf");
@@ -3278,7 +3278,7 @@ spawntagapps(unsigned int tag)
           simplespawn_if_not_running2("prismlauncher", "prismlauncher", "Minecraft*");
           break;
       case 1 << 11:
-          simplespawn_if_not_running("virt-manager");
+          // simplespawn_if_not_running("virt-manager");
           break;
       case 1 << 12:
             //simplespawn_if_not_running1("env AMD_VULKAN_ICD=RADV gamescope -w 2560 -h 1440 -f -- lutris lutris:rungameid/1", "gamescope");
