@@ -371,6 +371,7 @@ static void startdrag(struct wl_listener *listener, void *data);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void tile(Monitor *m);
+static void list_show_wallpaper(Monitor *m);
 static void togglefloating(const Arg *arg);
 static void togglesticky(const Arg *arg);
 static void togglemaximilized(const Arg *arg);
@@ -610,6 +611,10 @@ autostartexec(void)
 
     async_sleep_simplespawn_array(0, autostart_simplespawn);
     async_sleep_execute_array(0, autostart_execute);
+    async_sleep_simplespawn_array(3600, simplespawn_every_1h);
+
+    cyclelayout(&(Arg){.i = 0});
+
 }
 
 void
@@ -1286,9 +1291,10 @@ createmon(struct wl_listener *listener, void *data)
 	for (i = 0; i <= LENGTH(tags); i++) {
 		m->pertag->nmasters[i] = m->nmaster;
 		m->pertag->mfacts[i] = m->mfact;
-
-		m->pertag->ltidxs[i][0] = m->lt[0];
-		m->pertag->ltidxs[i][1] = m->lt[1];
+    
+		m->pertag->ltidxs[i][0] = &layouts[tags_layouts[i]];
+		m->pertag->ltidxs[i][1] = &layouts[tags_layouts[i]];
+        
 		m->pertag->sellts[i] = m->sellt;
 	}
 
@@ -3383,6 +3389,56 @@ tile(Monitor *m)
 		i++;
 	}
 }
+
+void
+list_show_wallpaper(Monitor *m)
+{
+	unsigned int i, n = 0, r, oe = enablegaps, ie = enablegaps, mw, my, ty, draw_borders = 1, x_start, x_end, y_start, y_end, gap;
+	Client *c;
+
+	wl_list_for_each(c, &clients, link)
+		if (VISIBLEON(c, m) && !c->isfloating && !c->isfullscreen)
+			n++;
+
+	if (n == 0)
+		return;
+
+	if (n == smartborders)
+		draw_borders = 0;
+
+    gap = m->w.height * 0.005;
+
+	mw = m->w.width - 2*gap*oe + gap*ie;
+
+    x_start = m->w.width * 0.42;
+    x_end = m->w.width * 0.0007;
+    y_start = m->w.height * 0.0007;
+    y_end = m->w.height * 0.0007;
+
+	i = 0;
+	my = ty = gap*oe;
+	wl_list_for_each(c, &clients, link) {
+		if (!VISIBLEON(c, m) || c->isfloating || c->isfullscreen)
+			continue;
+
+        if(c->ismaximilized) {
+			resize(c, (struct wlr_box){.x = m->w.x, .y = m->w.y,
+				.width = m->w.width, .height = m->w.height}, 0, 0);
+            continue;
+        }
+
+		r = n - i;
+		resize(c, (struct wlr_box){
+                .x = m->w.x + gap*oe + x_start,
+                .y = m->w.y + my + y_start,
+			    .width = mw - gap*ie - x_start - x_end, 
+                .height = (m->w.height - my - y_start - y_end - gap*oe - gap*ie * (r - 1)) / r 
+                }, 0, draw_borders);
+		my += c->geom.height + gap*ie;
+		i++;
+	}
+}
+
 
 void
 togglefloating(const Arg *arg)

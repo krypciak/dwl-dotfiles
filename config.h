@@ -36,6 +36,11 @@ static const char *tags[] = {
     "t", "f", "c", "g", "v", "h"
 };
 
+static const unsigned int tags_layouts[] = {
+0,  2,   2,   2,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0
+};
+
 static const Rule rules[] = {
 	/* app_id                 title   tags mask   iscentered  ismaximilized issticky
      *                                                isfloating  isterm        monitor
@@ -74,7 +79,7 @@ static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },
 	{ "><>",      NULL },    /* no layout function means floating behavior */
-	{ "[M]",      monocle },
+	{ "<>=",      list_show_wallpaper },
     { NULL,       NULL },
 };
 
@@ -190,14 +195,18 @@ static const char *autostart_simplespawn[] = {
     "[ \"$(pgrep keepassxc)\" == \"\" ] && keepassxc",
     "[ \"$(pgrep tutanota-deskop)\" == \"\" ] && tutanota-desktop --enable-features=UseOzonePlatform --ozone-platform=wayland",
     "blueman-applet",
-
 };
 
-#define WALLPAPER_SCRIPT "luajit $HOME/.config/dotfiles/scripts/wallpaper.lua "
+#define WALLPAPER_SCRIPT "luajit $HOME/.config/wallpapers/wallpaper.lua "
+
+static const char *simplespawn_every_1h[] = {
+    WALLPAPER_SCRIPT "hour_check"
+};
+
 
 static const char *autostart_execute[] = { 
     "swww init",
-    WALLPAPER_SCRIPT "0 0",
+    WALLPAPER_SCRIPT "inc 0 0",
     "gammastep -r" 
 };
 
@@ -286,8 +295,8 @@ static const Key keys[] = {
 
 
     // walpaper
-    { CAPS,                     XKB_KEY_t,          simplespawn,    {.v = WALLPAPER_SCRIPT "1 0" } },
-    { CAPS,                     XKB_KEY_g,          simplespawn,    {.v = WALLPAPER_SCRIPT "0 1" } },
+    { CAPS,                     XKB_KEY_t,          simplespawn,    {.v = WALLPAPER_SCRIPT "wayland-gui" } },
+    // { CAPS,                     XKB_KEY_g,          simplespawn,    {.v = WALLPAPER_SCRIPT "inc 0 1" } },
     
     // launcher
 	{ ALT,                      XKB_KEY_r,          simplespawn,    {.v = "krunner" } },
