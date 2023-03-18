@@ -599,6 +599,22 @@ applybounds(Client *c, struct wlr_box *bbox)
         pthread_create(&wait_thread, NULL, thread_func, NULL); \
     }
 
+#define simplespawn_loop(SECONDS,ARRAY) \
+    { \
+        void *thread_func(void *data12) { \
+            while(true) { \
+                for(int ite = 0; ite < LENGTH(ARRAY); ite++) { \
+                    simplespawn_string(ARRAY[ite]); \
+                } \
+                sleep(SECONDS); \
+            } \
+            return NULL; \
+        } \
+        pthread_t wait_thread; \
+        pthread_create(&wait_thread, NULL, thread_func, NULL); \
+    }
+
+
 
 void
 autostartexec(void)
@@ -611,10 +627,10 @@ autostartexec(void)
 
     async_sleep_simplespawn_array(0, autostart_simplespawn);
     async_sleep_execute_array(0, autostart_execute);
-    async_sleep_simplespawn_array(3600, simplespawn_every_1h);
-
+    simplespawn_loop(600, simplespawn_every_10m);
+    
+    // hack to get layout updated
     cyclelayout(&(Arg){.i = 0});
-
 }
 
 void

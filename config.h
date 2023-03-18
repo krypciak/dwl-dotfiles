@@ -199,7 +199,7 @@ static const char *autostart_simplespawn[] = {
 
 #define WALLPAPER_SCRIPT "luajit $HOME/.config/wallpapers/wallpaper.lua "
 
-static const char *simplespawn_every_1h[] = {
+static const char *simplespawn_every_10m[] = {
     WALLPAPER_SCRIPT "hour_check"
 };
 
