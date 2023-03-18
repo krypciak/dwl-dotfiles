@@ -3682,6 +3682,10 @@ view(const Arg *arg)
 	focusclient(focustop(selmon), 1);
 	arrange(selmon);
 	printstatus();
+    
+    if(cursor_hidden) {
+        hidecursor(NULL);
+    }
 }
 
 void
