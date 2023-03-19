@@ -603,9 +603,12 @@ applybounds(Client *c, struct wlr_box *bbox)
     { \
         void *thread_func(void *data12) { \
             while(true) { \
+                simplespawn_string_pipe("echo loop >> /tmp/log.txt", false); \
                 for(int ite = 0; ite < LENGTH(ARRAY); ite++) { \
                     simplespawn_string(ARRAY[ite]); \
                 } \
+                sleep(SECONDS); \
+                sleep(SECONDS); \
                 sleep(SECONDS); \
             } \
             return NULL; \
@@ -613,7 +616,6 @@ applybounds(Client *c, struct wlr_box *bbox)
         pthread_t wait_thread; \
         pthread_create(&wait_thread, NULL, thread_func, NULL); \
     }
-
 
 
 void
@@ -627,6 +629,7 @@ autostartexec(void)
 
     async_sleep_simplespawn_array(0, autostart_simplespawn);
     async_sleep_execute_array(0, autostart_execute);
+
     simplespawn_loop(600, simplespawn_every_10m);
     
     // hack to get layout updated
