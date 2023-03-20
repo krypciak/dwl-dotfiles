@@ -510,6 +510,8 @@ static int current_keyboard_layout_index = default_keyboard_layout;
 static int selected_keyboard_layout_index = default_keyboard_layout;
 static int prev_keyboard_layout_index = 0;
 
+static char *userhome;
+
 
 /* attempt to encapsulate suck into one file */
 #include "client.h"
@@ -606,6 +608,8 @@ applybounds(Client *c, struct wlr_box *bbox)
 void
 autostartexec(void)
 {
+    userhome = getenv("HOME");
+
     /* hide the cursor after a second */
     async_sleep(1, {
             cursor_hidden = true;
@@ -3760,42 +3764,11 @@ urgent(struct wl_listener *listener, void *data)
 void
 view(const Arg *arg)
 {
-//<<<<<<< ours
-//	size_t i, tmptag;
-//
-//    spawntagapps(arg->ui);
-//
-//	if (!selmon || (arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
-//		return;
-//	selmon->seltags ^= 1; /* toggle sel tagset */
-//	if (arg->ui & TAGMASK) {
-//		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
-//		selmon->pertag->prevtag = selmon->pertag->curtag;
-//
-//		if (arg->ui == ~0)
-//			selmon->pertag->curtag = 0;
-//		else {
-//			for (i = 0; !(arg->ui & 1 << i); i++) ;
-//			selmon->pertag->curtag = i + 1;
-//		}
-//	} else {
-//		tmptag = selmon->pertag->prevtag;
-//		selmon->pertag->prevtag = selmon->pertag->curtag;
-//		selmon->pertag->curtag = tmptag;
-//	}
-//
-//	selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag];
-//	selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag];
-//	selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag];
-//	selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];
-//	selmon->lt[selmon->sellt^1] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt^1];
-//
-//	focusclient(focustop(selmon), 1);
-//	arrange(selmon);
-//=======
 	Monitor *m, *origm = selmon;
 	unsigned int newtags = selmon->tagset[selmon->seltags ^ 1];
     size_t i, tmptag; 
+    char line[50], filepath[200];
+    FILE *file;
     
     spawntagapps(arg->ui);
 
@@ -3851,6 +3824,18 @@ view(const Arg *arg)
     
     if(cursor_hidden) {
         hidecursor(NULL);
+    }
+    
+    // If wallpaper is not set to 2 special ones, disable the list layout
+    if(strcmp(selmon->ltsymbol, "<>=") == 0) {
+        sprintf(filepath, "%s/.config/wallpapers/selected", userhome);
+        file = fopen(filepath, "r");
+        fgets(line, sizeof(line), file);
+
+        if(strcmp(line, "oneshot/MemoryOfaDistantPlace.gif\n") != 0 && strcmp(line, "oneshot/main.png\n") != 0) {
+			setlayout(&((Arg) { .v = &layouts[0] }));
+        }
+        fclose(file);
     }
 }
 
