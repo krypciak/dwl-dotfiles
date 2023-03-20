@@ -12,3 +12,4 @@ https://github.com/djpohly/dwl/wiki/smartborders
 https://github.com/djpohly/dwl/wiki/center
 https://github.com/djpohly/dwl/wiki/Sway-pointer-constraints
 https://github.com/djpohly/dwl/wiki/monitorconfig
+https://github.com/djpohly/dwl/wiki/singletagset

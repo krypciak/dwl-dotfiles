@@ -264,6 +264,7 @@ static void arrangelayer(Monitor *m, struct wl_list *list,
 		struct wlr_box *usable_area, int exclusive);
 static void arrangelayers(Monitor *m);
 static void autostartexec(void);
+static void attachclients(Monitor *m);
 static void axisnotify(struct wl_listener *listener, void *data);
 static void buttonpress(struct wl_listener *listener, void *data);
 static void checkconstraintregion(void);
@@ -309,6 +310,7 @@ static void fullscreennotify(struct wl_listener *listener, void *data);
 static void getclientinfo(const Arg *arg);
 static void handlecursoractivity(bool restore_focus);
 static int hidecursor(void *data);
+static size_t getunusedtag(void);
 static void incnmaster(const Arg *arg);
 static void incgaps(const Arg *arg);
 static void incigaps(const Arg *arg);
@@ -599,23 +601,6 @@ applybounds(Client *c, struct wlr_box *bbox)
         pthread_create(&wait_thread, NULL, thread_func, NULL); \
     }
 
-#define simplespawn_loop(SECONDS,ARRAY) \
-    { \
-        void *thread_func(void *data12) { \
-            while(true) { \
-                simplespawn_string_pipe("echo loop >> /tmp/log.txt", false); \
-                for(int ite = 0; ite < LENGTH(ARRAY); ite++) { \
-                    simplespawn_string(ARRAY[ite]); \
-                } \
-                sleep(SECONDS); \
-                sleep(SECONDS); \
-                sleep(SECONDS); \
-            } \
-            return NULL; \
-        } \
-        pthread_t wait_thread; \
-        pthread_create(&wait_thread, NULL, thread_func, NULL); \
-    }
 
 
 void
@@ -630,8 +615,6 @@ autostartexec(void)
     async_sleep_simplespawn_array(0, autostart_simplespawn);
     async_sleep_execute_array(0, autostart_execute);
 
-    simplespawn_loop(600, simplespawn_every_10m);
-    
     // hack to get layout updated
     cyclelayout(&(Arg){.i = 0});
 }
@@ -757,6 +740,15 @@ arrangelayers(Monitor *m)
 			}
 		}
 	}
+}
+
+void
+attachclients(Monitor *m)
+{
+	Client *c;
+	wl_list_for_each(c, &clients, link)
+		if (c->tags & m->tagset[m->seltags])
+			setmon(c, m, c->tags);
 }
 
 void
@@ -1250,7 +1242,9 @@ createmon(struct wl_listener *listener, void *data)
 	m->gappiv = gappiv;
 	m->gappoh = gappoh;
 	m->gappov = gappov;
-	m->tagset[0] = m->tagset[1] = 1;
+
+	m->tagset[0] = m->tagset[1] = (1<<getunusedtag()) & TAGMASK;
+
 	for (r = monrules; r < END(monrules); r++) {
 		if (!r->name || strstr(wlr_output->name, r->name)) {
 			m->mfact = r->mfact;
@@ -1790,6 +1784,9 @@ focusmon(const Arg *arg)
 			selmon = dirtomon(arg->i);
 		while (!selmon->wlr_output->enabled && i++ < nmons);
 	focusclient(focustop(selmon), 1);
+
+    /* Put the cursor in the middle of the monitor */
+    wlr_cursor_warp(cursor, NULL, selmon->m.x + selmon->m.width/2, selmon->m.y + selmon->m.height/2);
 }
 
 void
@@ -1836,6 +1833,22 @@ fullscreennotify(struct wl_listener *listener, void *data)
 {
 	Client *c = wl_container_of(listener, c, fullscreen);
 	setfullscreen(c, client_wants_fullscreen(c));
+}
+
+size_t
+getunusedtag(void)
+{
+	size_t i = 0;
+	Monitor *m;
+	if (wl_list_empty(&mons))
+		return i;
+	for (i=0; i < LENGTH(tags); i++) {
+		wl_list_for_each(m, &mons, link) {
+			if (!(m->tagset[m->seltags] & (1<<i)))
+				return i;
+		}
+	}
+	return i;
 }
 
 void
@@ -2653,8 +2666,6 @@ printstatus(void)
 		occ = floating_clients = urg = 0;
 
 		wl_list_for_each(c, &clients, link) {
-			if (c->mon != m)
-				continue;
 			occ |= c->tags;
             if(c->isfloating)
                 floating_clients |= c->tags;
@@ -3339,11 +3350,16 @@ startdrag(struct wl_listener *listener, void *data)
 void
 tag(const Arg *arg)
 {
+	Monitor *m;
 	Client *sel = focustop(selmon);
+
 	if (sel && arg->ui & TAGMASK) {
 		sel->tags = arg->ui & TAGMASK;
 		focusclient(focustop(selmon), 1);
-		arrange(selmon);
+		wl_list_for_each(m, &mons, link) {
+			attachclients(m);
+			arrange(m);
+		}
 	}
 	printstatus();
 }
@@ -3351,9 +3367,15 @@ tag(const Arg *arg)
 void
 tagmon(const Arg *arg)
 {
+	Monitor *m;
 	Client *sel = focustop(selmon);
-	if (sel)
+	if (sel) {
 		setmon(sel, dirtomon(arg->i), 0);
+		wl_list_for_each(m, &mons, link) {
+			arrange(m);
+		}
+		focusclient(focustop(sel->mon), 1);
+	}
 }
 
 void
@@ -3507,13 +3529,19 @@ togglegaps(const Arg *arg)
 void
 toggletag(const Arg *arg)
 {
+	Monitor *m;
 	unsigned int newtags;
 	Client *sel = focustop(selmon);
 	if (!sel)
 		return;
 	newtags = sel->tags ^ (arg->ui & TAGMASK);
 	if (newtags) {
+		wl_list_for_each(m, &mons, link)
+			if (m !=selmon && newtags & m->tagset[m->seltags])
+				return;
+
 		sel->tags = newtags;
+		attachclients(selmon);
 		focusclient(focustop(selmon), 1);
 		arrange(selmon);
 	}
@@ -3523,10 +3551,15 @@ toggletag(const Arg *arg)
 void
 toggleview(const Arg *arg)
 {
+	Monitor *m;
 	unsigned int newtagset = selmon ? selmon->tagset[selmon->seltags] ^ (arg->ui & TAGMASK) : 0;
 	size_t i;
 
 	if (newtagset) {
+		wl_list_for_each(m, &mons, link)
+			if (m !=selmon && newtagset & m->tagset[m->seltags])
+				return;
+
 		selmon->tagset[selmon->seltags] = newtagset;
 
 		if (newtagset == ~0) {
@@ -3547,6 +3580,8 @@ toggleview(const Arg *arg)
 		selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag];
 		selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];
 		selmon->lt[selmon->sellt^1] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt^1];
+
+		attachclients(selmon);
 
 		focusclient(focustop(selmon), 1);
 		arrange(selmon);
@@ -3725,15 +3760,51 @@ urgent(struct wl_listener *listener, void *data)
 void
 view(const Arg *arg)
 {
-	size_t i, tmptag;
-
+//<<<<<<< ours
+//	size_t i, tmptag;
+//
+//    spawntagapps(arg->ui);
+//
+//	if (!selmon || (arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
+//		return;
+//	selmon->seltags ^= 1; /* toggle sel tagset */
+//	if (arg->ui & TAGMASK) {
+//		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
+//		selmon->pertag->prevtag = selmon->pertag->curtag;
+//
+//		if (arg->ui == ~0)
+//			selmon->pertag->curtag = 0;
+//		else {
+//			for (i = 0; !(arg->ui & 1 << i); i++) ;
+//			selmon->pertag->curtag = i + 1;
+//		}
+//	} else {
+//		tmptag = selmon->pertag->prevtag;
+//		selmon->pertag->prevtag = selmon->pertag->curtag;
+//		selmon->pertag->curtag = tmptag;
+//	}
+//
+//	selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag];
+//	selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag];
+//	selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag];
+//	selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];
+//	selmon->lt[selmon->sellt^1] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt^1];
+//
+//	focusclient(focustop(selmon), 1);
+//	arrange(selmon);
+//=======
+	Monitor *m, *origm = selmon;
+	unsigned int newtags = selmon->tagset[selmon->seltags ^ 1];
+    size_t i, tmptag; 
+    
     spawntagapps(arg->ui);
 
 	if (!selmon || (arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
 		return;
-	selmon->seltags ^= 1; /* toggle sel tagset */
+
+	/* swap tags when trying to display a tag from another monitor */
 	if (arg->ui & TAGMASK) {
-		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
+		newtags = arg->ui & TAGMASK;
 		selmon->pertag->prevtag = selmon->pertag->curtag;
 
 		if (arg->ui == ~0)
@@ -3742,10 +3813,24 @@ view(const Arg *arg)
 			for (i = 0; !(arg->ui & 1 << i); i++) ;
 			selmon->pertag->curtag = i + 1;
 		}
-	} else {
+    } else {
 		tmptag = selmon->pertag->prevtag;
 		selmon->pertag->prevtag = selmon->pertag->curtag;
 		selmon->pertag->curtag = tmptag;
+    }
+	wl_list_for_each(m, &mons, link) {
+		if (m != selmon && newtags & m->tagset[m->seltags]) {
+			/* prevent displaying all tags (MODKEY-0) when multiple monitors
+			 * are connected */
+			if (newtags & selmon->tagset[selmon->seltags])
+				return;
+			m->seltags ^= 1;
+			m->tagset[m->seltags] = selmon->tagset[selmon->seltags];
+			attachclients(m);
+			focusclient(focustop(m), 1);
+			arrange(m);
+			break;
+		}
 	}
 
 	selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag];
@@ -3754,8 +3839,14 @@ view(const Arg *arg)
 	selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];
 	selmon->lt[selmon->sellt^1] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt^1];
 
-	focusclient(focustop(selmon), 1);
-	arrange(selmon);
+
+	origm->seltags ^= 1; /* toggle sel tagset */
+	if (arg->ui & TAGMASK)
+		origm->tagset[origm->seltags] = arg->ui & TAGMASK;
+	attachclients(origm);
+	focusclient(focustop(origm), 1);
+	arrange(origm);
+
 	printstatus();
     
     if(cursor_hidden) {
