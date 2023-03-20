@@ -200,14 +200,11 @@ static const char *autostart_simplespawn[] = {
 
 #define WALLPAPER_SCRIPT "luajit $HOME/.config/wallpapers/wallpaper.lua "
 
-static const char *simplespawn_every_10m[] = {
-    WALLPAPER_SCRIPT "wayland-hour_check",
-};
-
-
 static const char *autostart_execute[] = { 
+    "wlr-randr --output DP-2 --toggle",
+    "wlr-randr --output DP-2 --toggle",
     "swww init",
-    //WALLPAPER_SCRIPT "inc 0 0",
+    WALLPAPER_SCRIPT "inc 0 0",
     "gammastep -r" 
 };
 
