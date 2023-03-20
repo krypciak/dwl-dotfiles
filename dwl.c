@@ -280,6 +280,7 @@ static void createdecoration(struct wl_listener *listener, void *data);
 static void commitpointerconstraint(struct wl_listener *listener, void *data);
 static void createidleinhibitor(struct wl_listener *listener, void *data);
 static void createkeyboard(struct wlr_keyboard *keyboard);
+static void check_wallpaper_layout(void);
 static void setkeyboardlayout(unsigned int index);
 static void togglekeyboardlayout(const Arg *arg);
 static void createlayersurface(struct wl_listener *listener, void *data);
@@ -621,6 +622,7 @@ autostartexec(void)
 
     // hack to get layout updated
     cyclelayout(&(Arg){.i = 0});
+    check_wallpaper_layout();
 }
 
 void
@@ -1081,6 +1083,25 @@ createkeyboard(struct wlr_keyboard *keyboard)
 
 	/* And add the keyboard to our list of keyboards */
 	wl_list_insert(&keyboards, &kb->link);
+}
+
+void
+check_wallpaper_layout(void)
+{
+    char line[50], filepath[200];
+    FILE *file;
+
+    // If wallpaper is not set to 2 special ones, disable the list layout
+    if(strcmp(selmon->ltsymbol, "<>=") == 0) {
+        sprintf(filepath, "%s/.config/wallpapers/selected", userhome);
+        file = fopen(filepath, "r");
+        fgets(line, sizeof(line), file);
+
+        if(strcmp(line, "oneshot/MemoryOfaDistantPlace.gif\n") != 0 && strcmp(line, "oneshot/main.png\n") != 0) {
+			setlayout(&((Arg) { .v = &layouts[0] }));
+        }
+        fclose(file);
+    }
 }
 
 void
@@ -3767,8 +3788,6 @@ view(const Arg *arg)
 	Monitor *m, *origm = selmon;
 	unsigned int newtags = selmon->tagset[selmon->seltags ^ 1];
     size_t i, tmptag; 
-    char line[50], filepath[200];
-    FILE *file;
     
     spawntagapps(arg->ui);
 
@@ -3826,17 +3845,7 @@ view(const Arg *arg)
         hidecursor(NULL);
     }
     
-    // If wallpaper is not set to 2 special ones, disable the list layout
-    if(strcmp(selmon->ltsymbol, "<>=") == 0) {
-        sprintf(filepath, "%s/.config/wallpapers/selected", userhome);
-        file = fopen(filepath, "r");
-        fgets(line, sizeof(line), file);
-
-        if(strcmp(line, "oneshot/MemoryOfaDistantPlace.gif\n") != 0 && strcmp(line, "oneshot/main.png\n") != 0) {
-			setlayout(&((Arg) { .v = &layouts[0] }));
-        }
-        fclose(file);
-    }
+    check_wallpaper_layout();
 }
 
 void
