@@ -313,6 +313,8 @@ static const Key keys[] = {
     { SUPER|ALT,                XKB_KEY_d,          simplespawn,    {.v = "pkill discord" } },
 
 	{ CAPS,                     XKB_KEY_b,          getclientinfo,  {0} },
+	{ CAPS,                     XKB_KEY_3,          simplespawn,    {.v = "$HOME/.config/dwl/dwl-dotfiles/scripts/togglemonitors.sh" } },
+
 
     // layout 
     // master count
