@@ -2221,6 +2221,11 @@ killclient(const Arg *arg)
 	Client *sel = focustop(selmon);
 	if (sel)
 		client_send_close(sel);
+
+    if (cursor_hidden) {
+        hidecursor(NULL);
+    }
+
 }
 
 void
