@@ -2981,12 +2981,12 @@ setlayout(const Arg *arg)
 	if (arg && arg->v)
 		selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt] = (Layout *)arg->v;
 
-	if (!selmon->lt[selmon->sellt]->arrange) {
-		/* floating layout, draw borders around all clients */
-		Client *c;
-		wl_list_for_each(c, &clients, link)
-			resize(c, c->mon->m, 0, 1);
-	}
+	//if (!selmon->lt[selmon->sellt]->arrange) {
+	//	/* floating layout, draw borders around all clients */
+	//	Clientt *c;
+	//	wl_list_for_each(c, &clients, link)
+	//		resize(c, c->mon->m, 0, 1);
+	//}
 	/* TODO change layout symbol? */
 	strncpy(selmon->ltsymbol, selmon->lt[selmon->sellt]->symbol, LENGTH(selmon->ltsymbol));
 
