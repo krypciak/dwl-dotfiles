@@ -134,7 +134,7 @@ struct Client {
 #endif
 	unsigned int bw;
 	unsigned int tags;
-	int iscentered, isfloating, isurgent, isfullscreen, isterm, noswallow, issticky, ismaximilized;
+	int iscentered, isfloating, isurgent, isfullscreen, isterm, noswallow, issticky, ismaximilized, donthidecursor;
 	uint32_t resize; /* configure serial of a pending resize */
 	pid_t pid;
 	Client *swallowing, *swallowedby;
@@ -244,6 +244,7 @@ typedef struct {
 	int isterm;
 	int noswallow;
     int issticky;
+    int donthidecursor;
 	int monitor;
 } Rule;
 
@@ -650,6 +651,7 @@ applyrules(Client *c)
 			c->isfullscreen = r->isfullscreen;
 			c->ismaximilized = r->ismaximilized;
             c->issticky = r->issticky;
+            c->donthidecursor = r->donthidecursor;
 			newtags |= r->tags;
 			i = 0;
 			wl_list_for_each(m, &mons, link)
@@ -1975,7 +1977,7 @@ int
 hidecursor(void *data)
 {
     Client *c;
-    if ((c = focustop(selmon)) && (c->isfullscreen || c->ismaximilized)) return 1;
+    if ((c = focustop(selmon)) && c->donthidecursor) return 1;
 
 	wlr_cursor_set_image(cursor, NULL, 0, 0, 0, 0, 0, 0);
 	wlr_seat_pointer_notify_clear_focus(seat);
