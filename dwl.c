@@ -1355,8 +1355,8 @@ createmon(struct wl_listener *listener, void *data)
 	 * output (such as DPI, scale factor, manufacturer, etc).
 	 */
 	m->scene_output = wlr_scene_output_create(scene, wlr_output);
-
-	if (m->m.x < 0 || m->m.y < 0)
+    
+	if (m->m.x == -1 && m->m.y == -1)
 		wlr_output_layout_add_auto(output_layout, wlr_output);
 	else
 		wlr_output_layout_add(output_layout, wlr_output, m->m.x, m->m.y);
@@ -2986,12 +2986,6 @@ setlayout(const Arg *arg)
 	if (arg && arg->v)
 		selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt] = (Layout *)arg->v;
 
-	//if (!selmon->lt[selmon->sellt]->arrange) {
-	//	/* floating layout, draw borders around all clients */
-	//	Clientt *c;
-	//	wl_list_for_each(c, &clients, link)
-	//		resize(c, c->mon->m, 0, 1);
-	//}
 	/* TODO change layout symbol? */
 	strncpy(selmon->ltsymbol, selmon->lt[selmon->sellt]->symbol, LENGTH(selmon->ltsymbol));
 

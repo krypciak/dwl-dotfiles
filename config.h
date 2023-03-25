@@ -85,15 +85,10 @@ static const Layout layouts[] = {
 
 /* monitors */
 static const MonitorRule monrules[] = {
-	/* name       mfact nmaster scale layout       rotate/reflect x y resx resy rate adaptive custom*/
-	/* example of a HiDPI laptop monitor at 120Hz:
-	{ "eDP-1",    0.5,  1,      2,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL, 0, 0, 0, 0, 120.000, 1, 0},
-	*/
-	/* defaults */
-	{ NULL,       0.5, 1,      1,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL, 0, 0, 0, 0, 0, 0, 0},
-    { "HDMI-A-1", 0.5, 1,      1,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL, 0, 0, 0, 0, 144, 1, 0},
-    { "DP-2",     0.5, 1,      1,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL, 0, 0, 0, 0, 0, 0, 0},
-
+	/* name       mfact nmaster scale layout       rotate/reflect             x     y    resx    resy rate adaptive custom*/
+    { "DP-2",     0.5, 1,      1,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL, -1920, 380,  1920,  1080, 60,  0, 0},
+    { "HDMI-A-1", 0.5, 1,      1,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL, 0,     0,    2560,  1440, 144, 0, 0},
+	{ NULL,       0.5, 1,      1,    &layouts[0], WL_OUTPUT_TRANSFORM_NORMAL, -1,     -1,  0,     0,    0,   0, 0},
 };
 
 /* keyboard layouts */
@@ -201,8 +196,6 @@ static const char *autostart_simplespawn[] = {
 #define WALLPAPER_SCRIPT "luajit $HOME/.config/wallpapers/wallpaper.lua "
 
 static const char *autostart_execute[] = { 
-    "wlr-randr --output DP-2 --toggle",
-    "wlr-randr --output DP-2 --toggle",
     "swww init",
     WALLPAPER_SCRIPT "inc 0 0",
     "gammastep -r" 
