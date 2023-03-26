@@ -32,13 +32,14 @@ static const int lockfullscreen     = 1;  /* 1 will force focus on the fullscree
 
 /* tagging */
 static const char *tags[] = {
-    "T", "q", "w", "n", "d", "s", "a", "z",
+    "T", "q", "w", "n", "d", "s", "a", "z", 
     "t", "f", "c", "g", "v", "h"
 };
 
 static const unsigned int tags_layouts[] = {
-0,  2,   2,   2,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0
+    0,
+    2,   2,   2,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,
 };
 
 static const Rule rules[] = {
@@ -72,6 +73,7 @@ static const Rule rules[] = {
 
     { "Pinentry-gtk-2",      NULL,    0,          1,  1,  0,  0,  0,   1,   0,  0,  -1 },
     { "org.kde.krunner",     NULL,    0,          1,  1,  0,  0,  0,   1,   0,  0,  -1 },
+    { "gcr-prompter",        NULL,    0,          1,  1,  0,  0,  0,   1,   0,  0,  -1 },
 };
 
 /* layout(s) */
@@ -92,7 +94,7 @@ static const MonitorRule monrules[] = {
 };
 
 /* keyboard layouts */
-static const int default_keyboard_layout = 1;
+static const int default_keyboard_layout = 0;
 
 static struct xkb_rule_names dvorak_layout = {
     //.layout = "us",

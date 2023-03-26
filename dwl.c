@@ -3786,18 +3786,19 @@ urgent(struct wl_listener *listener, void *data)
 void
 view(const Arg *arg)
 {
-	Monitor *m, *origm = selmon;
-	unsigned int newtags = selmon->tagset[selmon->seltags ^ 1];
+    //Monitor *m;
+	//Monitor *origm = selmon;
+	//unsigned int newtags = selmon->tagset[selmon->seltags ^ 1];
     size_t i, tmptag; 
     
     spawntagapps(arg->ui);
 
-	if (!selmon || (arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
-		return;
+	//if (!selmon || (arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
+	//	return;
 
 	/* swap tags when trying to display a tag from another monitor */
 	if (arg->ui & TAGMASK) {
-		newtags = arg->ui & TAGMASK;
+		//newtags = arg->ui & TAGMASK;
 		selmon->pertag->prevtag = selmon->pertag->curtag;
 
 		if (arg->ui == ~0)
@@ -3807,24 +3808,24 @@ view(const Arg *arg)
 			selmon->pertag->curtag = i + 1;
 		}
     } else {
-		tmptag = selmon->pertag->prevtag;
+        tmptag = selmon->pertag->prevtag;
 		selmon->pertag->prevtag = selmon->pertag->curtag;
 		selmon->pertag->curtag = tmptag;
     }
-	wl_list_for_each(m, &mons, link) {
-		if (m != selmon && newtags & m->tagset[m->seltags]) {
-			/* prevent displaying all tags (MODKEY-0) when multiple monitors
-			 * are connected */
-			if (newtags & selmon->tagset[selmon->seltags])
-				return;
-			m->seltags ^= 1;
-			m->tagset[m->seltags] = selmon->tagset[selmon->seltags];
-			attachclients(m);
-			focusclient(focustop(m), 1);
-			arrange(m);
-			break;
-		}
-	}
+	//wl_list_for_each(m, &mons, link) {
+	//	if (m != selmon && newtags & m->tagset[m->seltags]) {
+	//		/* prevent displaying all tags (MODKEY-0) when multiple monitors
+	//		 * are connected */
+	//		if (newtags & selmon->tagset[selmon->seltags])
+	//			return;
+	//		m->seltags ^= 1;
+	//		m->tagset[m->seltags] = selmon->tagset[selmon->seltags];
+	//		attachclients(m);
+	//		focusclient(focustop(m), 1);
+	//		arrange(m);
+	//		break;
+	//	}
+	//}
 
 	selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag];
 	selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag];
@@ -3832,13 +3833,12 @@ view(const Arg *arg)
 	selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];
 	selmon->lt[selmon->sellt^1] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt^1];
 
-
-	origm->seltags ^= 1; /* toggle sel tagset */
+	selmon->seltags ^= 1; /* toggle sel tagset */
 	if (arg->ui & TAGMASK)
-		origm->tagset[origm->seltags] = arg->ui & TAGMASK;
-	attachclients(origm);
-	focusclient(focustop(origm), 1);
-	arrange(origm);
+		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
+	attachclients(selmon);
+	focusclient(focustop(selmon), 1);
+	arrange(selmon);
 
 	printstatus();
     
