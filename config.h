@@ -297,7 +297,7 @@ static const Key keys[] = {
 	{ ALT,                      XKB_KEY_r,          simplespawn,    {.v = "fuzzel --width 30 --log-level=none" } },
 	{ ALT,                      XKB_KEY_Return,     simplespawn,    {.v = "alacritty" } },
     // clipboard history view
-    { CAPS,                     XKB_KEY_1,          simplespawn,    {.v = "cliphist list | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}' | fuzzel --width 100 -d --log-level=none | cliphist decode | wl-copy" } },
+    { CAPS,                     XKB_KEY_1,          simplespawn,    {.v = "cliphist list | fuzzel --width 100 -d --log-level=none | cliphist decode | wl-copy" } },
     // clear the clipboard history
     { CAPS|CTRL,                XKB_KEY_1,          simplespawn,    {.v = "rm $HOME/.cache/cliphist/db" } },
 
