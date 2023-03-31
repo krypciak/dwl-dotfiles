@@ -274,7 +274,7 @@ static const Key keys[] = {
     { CAPS|CTRL,                XKB_KEY_d,          simplespawn,    {.v = "amixer set Capture nocap" } },
 
     // select audio output
-    { CAPS|CTRL,                XKB_KEY_q,          simplespawn,    {.v = "pacmd set-default-sink \"$(pactl list sinks short | awk '{print $1 \" <> \" substr($2,13) }' | tr '-' ' ' | tr '_' ' ' | fuzzel -d --log-level=none | awk '{print $1}')\"" } },
+    { CAPS|CTRL,                XKB_KEY_q,          simplespawn,    {.v = "pacmd set-default-sink \"$(pactl list sinks short | awk '{print $1 \" <> \" substr($2,13) }' | tr '-' ' ' | tr '_' ' ' | fuzzel -d --log-level=none --width 50 | awk '{print $1}')\"" } },
 
 
     // gaps
@@ -296,7 +296,7 @@ static const Key keys[] = {
 	{ ALT,                      XKB_KEY_r,          simplespawn,    {.v = "krunner" } },
 	{ ALT,                      XKB_KEY_Return,     simplespawn,    {.v = "alacritty" } },
     // clipboard history view
-    { CAPS,                     XKB_KEY_1,          simplespawn,    {.v = "cliphist list | fuzzel -d --log-level=none | cliphist decode | wl-copy" } },
+    { CAPS,                     XKB_KEY_1,          simplespawn,    {.v = "cliphist list | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}' | fuzzel --width 100 -d --log-level=none | cliphist decode | wl-copy" } },
     // clear the clipboard history
     { CAPS|CTRL,                XKB_KEY_1,          simplespawn,    {.v = "rm $HOME/.cache/cliphist/db" } },
 
