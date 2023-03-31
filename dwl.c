@@ -3841,6 +3841,10 @@ view(const Arg *arg)
 
 	printstatus();
     
+    if(cursor_hidden) {
+        hidecursor(NULL);
+    }
+    
     check_wallpaper_layout();
 }
 
