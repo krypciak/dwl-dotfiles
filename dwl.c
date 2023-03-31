@@ -2223,11 +2223,6 @@ killclient(const Arg *arg)
 	Client *sel = focustop(selmon);
 	if (sel)
 		client_send_close(sel);
-
-    if (cursor_hidden) {
-        hidecursor(NULL);
-    }
-
 }
 
 void
@@ -3677,6 +3672,10 @@ unmapnotify(struct wl_listener *listener, void *data)
 	wlr_scene_node_destroy(&c->scene->node);
 	printstatus();
 	motionnotify(0, NULL, 0, 0, 0, 0);
+
+    if (cursor_hidden) {
+        hidecursor(NULL);
+    }
 }
 
 void
@@ -3841,10 +3840,6 @@ view(const Arg *arg)
 	arrange(selmon);
 
 	printstatus();
-    
-    if(cursor_hidden) {
-        hidecursor(NULL);
-    }
     
     check_wallpaper_layout();
 }
