@@ -188,7 +188,8 @@ static const char *autostart_simplespawn[] = {
     "$HOME/.config/dwl/someblocks/someblocks",
     "pulseaudio --start",
     "wl-paste --watch cliphist store",
-    "amixer set Capture nocap",
+    "amixer set Capture nocap", 
+    "fnott",
 
     "[ \"$(pgrep keepassxc)\" == \"\" ] && keepassxc",
     "[ \"$(pgrep tutanota-deskop)\" == \"\" ] && tutanota-desktop --enable-features=UseOzonePlatform --ozone-platform=wayland",
