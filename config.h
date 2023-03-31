@@ -293,7 +293,7 @@ static const Key keys[] = {
     // { CAPS,                     XKB_KEY_g,          simplespawn,    {.v = WALLPAPER_SCRIPT "inc 0 1" } },
     
     // launcher
-	{ ALT,                      XKB_KEY_r,          simplespawn,    {.v = "krunner" } },
+	{ ALT,                      XKB_KEY_r,          simplespawn,    {.v = "fuzzel --width 30 --log-level=none" } },
 	{ ALT,                      XKB_KEY_Return,     simplespawn,    {.v = "alacritty" } },
     // clipboard history view
     { CAPS,                     XKB_KEY_1,          simplespawn,    {.v = "cliphist list | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}' | fuzzel --width 100 -d --log-level=none | cliphist decode | wl-copy" } },
