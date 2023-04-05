@@ -1085,6 +1085,8 @@ createkeyboard(struct wlr_keyboard *keyboard)
 
 	/* And add the keyboard to our list of keyboards */
 	wl_list_insert(&keyboards, &kb->link);
+    
+    setkeyboardlayout(selected_keyboard_layout_index);
 }
 
 void
