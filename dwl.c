@@ -1883,7 +1883,7 @@ getunusedtag(void)
 void
 getclientinfo(const Arg *arg)
 {
-	char *title, *appid, *cmd = malloc(sizeof(char)*150);
+	char *title, *appid, cmd[150], iswaylandnative[30];
 	Client *c = focustop(selmon);
 
     if(c == NULL) {
@@ -1900,12 +1900,14 @@ getclientinfo(const Arg *arg)
         escape(appid);
     else
 		appid = "null";
-
-    sprintf(cmd, "zenity --info --text 'Title: %s\nClass: %s\n'", title, appid);
+    
+    switch (c->type) {
+        case 0: sprintf(iswaylandnative, "Wayland client"); break;
+        case 2: sprintf(iswaylandnative, "Xwayland client"); break;
+    }
+    sprintf(cmd, "zenity --info --text 'Title: %s\nClass: %s\n%s\n'", title, appid, iswaylandnative);
     
     simplespawn_string(cmd);
-
-    free(cmd);
 }
 
 pid_t
