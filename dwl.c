@@ -142,7 +142,7 @@ struct Client {
 
 typedef struct {
 	uint32_t mod;
-	xkb_keysym_t keysym;
+	xkb_keycode_t keycode;
 	void (*func)(const Arg *);
 	const Arg arg;
 } Key;
@@ -151,9 +151,8 @@ typedef struct {
 	struct wl_list link;
 	struct wlr_keyboard *wlr_keyboard;
 
-	int nsyms;
-	const xkb_keysym_t *keysyms; /* invalid if nsyms == 0 */
-	uint32_t mods; /* invalid if nsyms == 0 */
+	xkb_keycode_t keycode;
+	uint32_t mods; /* invalid if keycode == 0 */
 	struct wl_event_source *key_repeat_source;
 
 	struct wl_listener modifiers;
@@ -322,7 +321,7 @@ static void incogaps(const Arg *arg);
 static void incohgaps(const Arg *arg);
 static void incovgaps(const Arg *arg);
 static void inputdevice(struct wl_listener *listener, void *data);
-static int keybinding(uint32_t mods, xkb_keysym_t sym);
+static int keybinding(uint32_t mods, xkb_keycode_t keycode);
 static void keypress(struct wl_listener *listener, void *data);
 static void keypressmod(struct wl_listener *listener, void *data);
 static int keyrepeat(void *data);
@@ -2112,7 +2111,7 @@ inputdevice(struct wl_listener *listener, void *data)
 }
 
 int
-keybinding(uint32_t mods, xkb_keysym_t sym)
+keybinding(uint32_t mods, xkb_keycode_t keycode)
 {
 	/*
 	 * Here we handle compositor keybindings. This is when the compositor is
@@ -2123,7 +2122,7 @@ keybinding(uint32_t mods, xkb_keysym_t sym)
 	const Key *k;
 	for (k = keys; k < END(keys); k++) {
 		if (CLEANMASK(mods) == CLEANMASK(k->mod) &&
-				sym == k->keysym && k->func) {
+				keycode == k->keycode && k->func) {
 			k->func(&k->arg);
 			handled = 1;
 		}
@@ -2134,17 +2133,12 @@ keybinding(uint32_t mods, xkb_keysym_t sym)
 void
 keypress(struct wl_listener *listener, void *data)
 {
-	int i;
 	/* This event is raised when a key is pressed or released. */
 	Keyboard *kb = wl_container_of(listener, kb, key);
 	struct wlr_keyboard_key_event *event = data;
 
 	/* Translate libinput keycode -> xkbcommon */
 	uint32_t keycode = event->keycode + 8;
-	/* Get a list of keysyms based on the keymap for this keyboard */
-	const xkb_keysym_t *syms;
-	int nsyms = xkb_state_key_get_syms(
-			kb->wlr_keyboard->xkb_state, keycode, &syms);
 
 	int handled = 0;
 	uint32_t mods = wlr_keyboard_get_modifiers(kb->wlr_keyboard);
@@ -2155,17 +2149,15 @@ keypress(struct wl_listener *listener, void *data)
 	 * attempt to process a compositor keybinding. */
 	if (!locked && !input_inhibit_mgr->active_inhibitor
 			&& event->state == WL_KEYBOARD_KEY_STATE_PRESSED)
-		for (i = 0; i < nsyms; i++)
-			handled = keybinding(mods, syms[i]) || handled;
+		handled = keybinding(mods, keycode);
 
 	if (handled && kb->wlr_keyboard->repeat_info.delay > 0) {
 		kb->mods = mods;
-		kb->keysyms = syms;
-		kb->nsyms = nsyms;
+		kb->keycode = keycode;
 		wl_event_source_timer_update(kb->key_repeat_source,
 				kb->wlr_keyboard->repeat_info.delay);
 	} else {
-		kb->nsyms = 0;
+		kb->keycode = 0;
 		wl_event_source_timer_update(kb->key_repeat_source, 0);
 	}
 
@@ -2184,15 +2176,6 @@ keypressmod(struct wl_listener *listener, void *data)
 	 * pressed. We simply communicate this to the client. */
 	Keyboard *kb = wl_container_of(listener, kb, modifiers);
 
-    /* Make sure the keyboard layout is qwerty when pressing a modkey */
-    uint32_t mods = wlr_keyboard_get_modifiers(kb->wlr_keyboard);
-    if (mods == 0) {
-        setkeyboardlayout(prev_keyboard_layout_index);
-    } else if (mods != 1) {
-        prev_keyboard_layout_index = selected_keyboard_layout_index;
-        setkeyboardlayout(0);
-    }
-
 	/*
 	 * A seat can only have one keyboard, but this is a limitation of the
 	 * Wayland protocol - not wlroots. We assign all connected keyboards to the
@@ -2209,13 +2192,11 @@ int
 keyrepeat(void *data)
 {
 	Keyboard *kb = data;
-	int i;
-	if (kb->nsyms && kb->wlr_keyboard->repeat_info.rate > 0) {
+	if (kb->keycode && kb->wlr_keyboard->repeat_info.rate > 0) {
 		wl_event_source_timer_update(kb->key_repeat_source,
 				1000 / kb->wlr_keyboard->repeat_info.rate);
 
-		for (i = 0; i < kb->nsyms; i++)
-			keybinding(kb->mods, kb->keysyms[i]);
+		keybinding(kb->mods, kb->keycode);
 	}
 
 	return 0;
