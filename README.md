@@ -1,4 +1,8 @@
-# THIS A PERSONAL FORK!
+# My personal fork of dwl
+![07.04.2023](scripts/dwl.png)
+
+
+# Original README.md:
 # dwl - dwm for Wayland
 
 Join us on our [Discord server] or at [#dwl] on irc.libera.chat.
