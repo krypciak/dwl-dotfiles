@@ -193,6 +193,7 @@ static const char *autostart_simplespawn[] = {
     "[ \"$(pgrep keepassxc)\" == \"\" ] && keepassxc",
     "[ \"$(pgrep tutanota-deskop)\" == \"\" ] && tutanota-desktop --enable-features=UseOzonePlatform --ozone-platform=wayland",
     "blueman-applet",
+    "wlr-randr --output DP-1 --off",
 };
 
 #define WALLPAPER_SCRIPT "luajit $HOME/.config/wallpapers/wallpaper.lua "
