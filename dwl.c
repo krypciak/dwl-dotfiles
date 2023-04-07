@@ -614,16 +614,16 @@ autostartexec(void)
 
     /* hide the cursor after a second */
     async_sleep(1, {
-            cursor_hidden = true;
-            hidecursor(NULL);
+        cursor_hidden = true;
+        hidecursor(NULL);
+
+        // hack to get layout updated
+        cyclelayout(&(Arg){.i = 0});
+        check_wallpaper_layout();
     });
 
     async_sleep_simplespawn_array(0, autostart_simplespawn);
     async_sleep_execute_array(0, autostart_execute);
-
-    // hack to get layout updated
-    cyclelayout(&(Arg){.i = 0});
-    check_wallpaper_layout();
 }
 
 void
