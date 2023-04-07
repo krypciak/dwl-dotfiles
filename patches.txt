@@ -1,0 +1,15 @@
+https://github.com/djpohly/dwl/wiki/autostart
+https://github.com/djpohly/dwl/wiki/vanitygaps
+https://github.com/djpohly/dwl/wiki/attachbottom
+https://github.com/djpohly/dwl/wiki/unclutter
+https://github.com/djpohly/dwl/wiki/swallow
+https://github.com/djpohly/dwl/wiki/pertag
+https://github.com/djpohly/dwl/wiki/cyclelayouts
+https://github.com/djpohly/dwl/wiki/outputPowerManagement
+https://github.com/djpohly/dwl/wiki/movestack
+https://github.com/djpohly/dwl/wiki/sticky
+https://github.com/djpohly/dwl/wiki/smartborders
+https://github.com/djpohly/dwl/wiki/center
+https://github.com/djpohly/dwl/wiki/Sway-pointer-constraints
+https://github.com/djpohly/dwl/wiki/monitorconfig
+https://github.com/djpohly/dwl/wiki/singletagset
