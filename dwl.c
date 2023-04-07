@@ -75,7 +75,7 @@
 #define VISIBLEON(C, M)         (((M) && (C)->mon == (M) && ((C)->tags & (M)->tagset[(M)->seltags])) || (C)->issticky)
 #define LENGTH(X)               (sizeof X / sizeof X[0])
 #define END(A)                  ((A) + LENGTH(A))
-#define TAGMASK                 ((1 << LENGTH(tags)) - 1)
+#define TAGMASK                 ((1u << tagcount) - 1)
 #define LISTEN(E, L, H)         wl_signal_add((E), ((L)->notify = (H), (L)))
 #define IDLE_NOTIFY_ACTIVITY    wlr_idle_notify_activity(idle, seat), wlr_idle_notifier_v1_notify_activity(idle_notifier, seat)
 
@@ -520,14 +520,14 @@ static char *userhome;
 
 struct Pertag {
 	unsigned int curtag, prevtag; /* current and previous tag */
-	int nmasters[LENGTH(tags) + 1]; /* number of windows in master area */
-	float mfacts[LENGTH(tags) + 1]; /* mfacts per tag */
-	unsigned int sellts[LENGTH(tags) + 1]; /* selected layouts */
-	const Layout *ltidxs[LENGTH(tags) + 1][2]; /* matrix of tags and layouts indexes  */
+	int nmasters[tagcount + 1]; /* number of windows in master area */
+	float mfacts[tagcount + 1]; /* mfacts per tag */
+	unsigned int sellts[tagcount + 1]; /* selected layouts */
+	const Layout *ltidxs[tagcount + 1][2]; /* matrix of tags and layouts indexes  */
 };
 
 /* compile-time check if all tags fit into an unsigned int bit array. */
-struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
+struct NumTags { char limitexceeded[tagcount > 31 ? -1 : 1]; };
 
 /* function implementations */
 void
@@ -1330,7 +1330,7 @@ createmon(struct wl_listener *listener, void *data)
 	m->pertag = calloc(1, sizeof(Pertag));
 	m->pertag->curtag = m->pertag->prevtag = 1;
 
-	for (i = 0; i <= LENGTH(tags); i++) {
+	for (i = 0; i <= tagcount; i++) {
 		m->pertag->nmasters[i] = m->nmaster;
 		m->pertag->mfacts[i] = m->mfact;
     
@@ -1871,7 +1871,7 @@ getunusedtag(void)
 	Monitor *m;
 	if (wl_list_empty(&mons))
 		return i;
-	for (i=0; i < LENGTH(tags); i++) {
+	for (i=0; i < tagcount; i++) {
 		wl_list_for_each(m, &mons, link) {
 			if (!(m->tagset[m->seltags] & (1<<i)))
 				return i;

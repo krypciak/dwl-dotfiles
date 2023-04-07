@@ -30,11 +30,8 @@ static const int smartborders       = 1;
 
 static const int lockfullscreen     = 1;  /* 1 will force focus on the fullscreen window */
 
-/* tagging */
-static const char *tags[] = {
-    "T", "q", "w", "n", "d", "s", "a", "z", 
-    "t", "f", "c", "g", "v", "h"
-};
+/* tagging - tagcount should be no greater than 31 */
+#define tagcount 14
 
 static const unsigned int tags_layouts[] = {
     0,
