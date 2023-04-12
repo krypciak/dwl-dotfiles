@@ -3389,7 +3389,7 @@ tagmon(const Arg *arg)
 		wl_list_for_each(m, &mons, link) {
 			arrange(m);
 		}
-		focusclient(focustop(sel->mon), 1);
+		//focusclient(focustop(sel->mon), 1);
 	}
 }
 
