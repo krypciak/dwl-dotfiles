@@ -2176,6 +2176,15 @@ keypressmod(struct wl_listener *listener, void *data)
 	 * pressed. We simply communicate this to the client. */
 	Keyboard *kb = wl_container_of(listener, kb, modifiers);
 
+     /* Make sure the keyboard layout is qwerty when pressing a modkey */
+     uint32_t mods = wlr_keyboard_get_modifiers(kb->wlr_keyboard);
+     if (mods == 0) {
+         setkeyboardlayout(prev_keyboard_layout_index);
+     } else if (mods != 1) {
+         prev_keyboard_layout_index = selected_keyboard_layout_index;
+         setkeyboardlayout(0);
+     }
+
 	/*
 	 * A seat can only have one keyboard, but this is a limitation of the
 	 * Wayland protocol - not wlroots. We assign all connected keyboards to the
