@@ -90,7 +90,7 @@ enum { NetWMWindowTypeDialog, NetWMWindowTypeSplash, NetWMWindowTypeToolbar,
 
 typedef union {
 	int i;
-	unsigned int ui;
+	uint32_t ui;
 	float f;
 	const void *v;
 } Arg;
@@ -203,7 +203,7 @@ struct Monitor {
 	int gappov;           /* vertical outer gaps */
 	unsigned int seltags;
 	unsigned int sellt;
-	unsigned int tagset[2];
+	uint32_t tagset[2];
 	double mfact;
 	int nmaster;
 	char ltsymbol[16];
@@ -362,7 +362,7 @@ static void setgaps(int oh, int ov, int ih, int iv);
 static void setgaps_single(const Arg *arg);
 static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
-static void setmon(Client *c, Monitor *m, unsigned int newtags);
+static void setmon(Client *c, Monitor *m, uint32_t newtags);
 static void setpsel(struct wl_listener *listener, void *data);
 static void setsel(struct wl_listener *listener, void *data);
 static void setup(void);
@@ -630,7 +630,7 @@ applyrules(Client *c)
 {
 	/* rule matching */
 	const char *appid, *title;
-	unsigned int i, newtags = 0;
+	uint32_t i, newtags = 0;
 	const Rule *r;
 	Monitor *mon = selmon, *m;
 
@@ -3000,7 +3000,7 @@ setmfact(const Arg *arg)
 }
 
 void
-setmon(Client *c, Monitor *m, unsigned int newtags)
+setmon(Client *c, Monitor *m, uint32_t newtags)
 {
 	Monitor *oldmon = c->mon;
 
@@ -3544,7 +3544,7 @@ togglegaps(const Arg *arg)
 void
 toggletag(const Arg *arg)
 {
-	Monitor *m;
+    Monitor *m;
 	unsigned int newtags;
 	Client *sel = focustop(selmon);
 	if (!sel)
