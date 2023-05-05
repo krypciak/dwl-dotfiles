@@ -3466,10 +3466,10 @@ list_show_wallpaper(Monitor *m)
 
 	mw = m->w.width - 2*gap*oe + gap*ie;
 
-    x_start = m->w.width * 0.42;
-    x_end = m->w.width * 0.0007;
+    x_start = m->w.width * 0.39;
+    x_end = m->w.width * 0.0003;
     y_start = m->w.height * 0.0007;
-    y_end = m->w.height * 0.0007;
+    y_end = m->w.height * 0.0003;
 
 	i = 0;
 	my = ty = gap*oe;
