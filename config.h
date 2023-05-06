@@ -307,7 +307,6 @@ static const Key keys[] = {
     { SUPER|ALT,                Key_d,          simplespawn,    {.v = "pkill discord" } },
 
 	{ CAPS,                     Key_b,          getclientinfo,  {0} },
-	{ CAPS,                     Key_3,          simplespawn,    {.v = "$HOME/.config/dwl/dwl-dotfiles/scripts/togglemonitors.sh" } },
 	{ CAPS,                     Key_3,          simplespawn,    {.v = "$HOME/.config/dotfiles/scripts/wayland/togglemonitors.sh" } },
 	{ CAPS,                     Key_4,          simplespawn,    {.v = "$HOME/.config/dotfiles/scripts/wayland/change-res.sh" } },
 
