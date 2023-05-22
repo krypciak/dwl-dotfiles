@@ -151,10 +151,6 @@ typedef struct {
 	struct wl_list link;
 	struct wlr_keyboard *wlr_keyboard;
 
-	xkb_keycode_t keycode;
-	uint32_t mods; /* invalid if keycode == 0 */
-	struct wl_event_source *key_repeat_source;
-
 	struct wl_listener modifiers;
 	struct wl_listener key;
 	struct wl_listener destroy;
@@ -324,7 +320,6 @@ static void inputdevice(struct wl_listener *listener, void *data);
 static int keybinding(uint32_t mods, xkb_keycode_t keycode);
 static void keypress(struct wl_listener *listener, void *data);
 static void keypressmod(struct wl_listener *listener, void *data);
-static int keyrepeat(void *data);
 static void killclient(const Arg *arg);
 static void locksession(struct wl_listener *listener, void *data);
 static void maplayersurfacenotify(struct wl_listener *listener, void *data);
@@ -927,7 +922,6 @@ cleanupkeyboard(struct wl_listener *listener, void *data)
 {
 	Keyboard *kb = wl_container_of(listener, kb, destroy);
 
-	wl_event_source_remove(kb->key_repeat_source);
 	wl_list_remove(&kb->link);
 	wl_list_remove(&kb->modifiers.link);
 	wl_list_remove(&kb->key.link);
@@ -1078,9 +1072,6 @@ createkeyboard(struct wlr_keyboard *keyboard)
 	LISTEN(&keyboard->base.events.destroy, &kb->destroy, cleanupkeyboard);
 
 	wlr_seat_set_keyboard(seat, keyboard);
-
-	kb->key_repeat_source = wl_event_loop_add_timer(
-			wl_display_get_event_loop(dpy), keyrepeat, kb);
 
 	/* And add the keyboard to our list of keyboards */
 	wl_list_insert(&keyboards, &kb->link);
@@ -2151,16 +2142,6 @@ keypress(struct wl_listener *listener, void *data)
 			&& event->state == WL_KEYBOARD_KEY_STATE_PRESSED)
 		handled = keybinding(mods, keycode);
 
-	if (handled && kb->wlr_keyboard->repeat_info.delay > 0) {
-		kb->mods = mods;
-		kb->keycode = keycode;
-		wl_event_source_timer_update(kb->key_repeat_source,
-				kb->wlr_keyboard->repeat_info.delay);
-	} else {
-		kb->keycode = 0;
-		wl_event_source_timer_update(kb->key_repeat_source, 0);
-	}
-
 	if (!handled) {
 		/* Pass unhandled keycodes along to the client. */
 		wlr_seat_set_keyboard(seat, kb->wlr_keyboard);
@@ -2195,20 +2176,6 @@ keypressmod(struct wl_listener *listener, void *data)
 	/* Send modifiers to the client. */
 	wlr_seat_keyboard_notify_modifiers(seat,
 		&kb->wlr_keyboard->modifiers);
-}
-
-int
-keyrepeat(void *data)
-{
-	Keyboard *kb = data;
-	if (kb->keycode && kb->wlr_keyboard->repeat_info.rate > 0) {
-		wl_event_source_timer_update(kb->key_repeat_source,
-				1000 / kb->wlr_keyboard->repeat_info.rate);
-
-		keybinding(kb->mods, kb->keycode);
-	}
-
-	return 0;
 }
 
 void
