@@ -72,6 +72,8 @@ static const Rule rules[] = {
     { "Pinentry-gtk-2",      NULL,    0,          1,  1,  0,  0,  0,   1,   0,  0,  -1 },
     { "org.kde.krunner",     NULL,    0,          1,  1,  0,  0,  0,   1,   0,  0,  -1 },
     { "gcr-prompter",        NULL,    0,          1,  1,  0,  0,  0,   1,   0,  0,  -1 },
+    { "krita",               NULL,    0,          1,  0,  0,  0,  0,   1,   0,  0,  -1 },
+    
 };
 
 /* layout(s) */
