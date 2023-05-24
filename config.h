@@ -177,7 +177,7 @@ static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TA
 
 
 
-#define PLAYERCTL_SCRIPT "luajit $HOME/.config/dotfiles/scripts/playerctl.lua "
+#define PLAYERCTL_SCRIPT "luajit $HOME/.config/scripts/playerctl.lua "
 #define PLAYERCTL_KEY(KEY,ACTION) \
 	{ CAPS,                    KEY,           simplespawn,     {.v = PLAYERCTL_SCRIPT "\"" ACTION "\" 1"} }, \
 	{ CAPS|SHIFT,              KEY,           simplespawn,     {.v = PLAYERCTL_SCRIPT "\"" ACTION "\" 2"} }
@@ -312,8 +312,8 @@ static const Key keys[] = {
     { SUPER|ALT,                Key_d,          simplespawn,    {.v = "pkill discord" } },
 
 	{ CAPS,                     Key_b,          getclientinfo,  {0} },
-	{ CAPS,                     Key_3,          simplespawn,    {.v = "$HOME/.config/dotfiles/scripts/wayland/togglemonitors.sh" } },
-	{ CAPS,                     Key_4,          simplespawn,    {.v = "$HOME/.config/dotfiles/scripts/wayland/change-res.sh" } },
+	{ CAPS,                     Key_3,          simplespawn,    {.v = "$HOME/.config/scripts/wayland/togglemonitors.sh" } },
+	{ CAPS,                     Key_4,          simplespawn,    {.v = "$HOME/.config/scripts/wayland/change-res.sh" } },
 
 
     // layout 
