@@ -262,7 +262,10 @@ static const Key keys[] = {
     PLAYERCTL_KEY(Key_a,   "previous"),
     PLAYERCTL_KEY(Key_w,   "volume 0.02%+"),
     PLAYERCTL_KEY(Key_s,   "volume 0.02%-"), 
+
 	
+    { NULL,                     Key_XF86AudioPlay, simplespawn,  {.v = PLAYERCTL_SCRIPT "play-pause 1" } },
+
     { CAPS|CTRL,                Key_Tab,        simplespawn,     {.v = PLAYERCTL_SCRIPT "swap -1"} },
 
 
