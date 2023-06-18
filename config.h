@@ -185,7 +185,7 @@ static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TA
 
 /* Autostart */
 static const char *autostart_simplespawn[] = {
-    "$HOME/.config/dwl/someblocks/someblocks",
+    "$HOME/.config/dwl/someblocks/someblocks -m -1",
     "pulseaudio --start",
     "wl-paste --watch cliphist store",
     "amixer set Capture nocap", 
