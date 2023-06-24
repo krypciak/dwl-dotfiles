@@ -1798,6 +1798,9 @@ focusmon(const Arg *arg)
 			selmon = dirtomon(arg->i);
 		while (!selmon->wlr_output->enabled && i++ < nmons);
 	focusclient(focustop(selmon), 1);
+
+    /* Put the cursor in the middle of the monitor */
+    wlr_cursor_warp(cursor, NULL, selmon->m.x + selmon->m.width/2, selmon->m.y + selmon->m.height/2);
 }
 
 void
