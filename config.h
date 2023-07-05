@@ -31,7 +31,7 @@ static const int smartborders       = 1;
 static const int lockfullscreen     = 1;  /* 1 will force focus on the fullscreen window */
 
 /* tagging - tagcount should be no greater than 31 */
-#define tagcount 14
+#define tagcount 15
 
 static const unsigned int tags_layouts[] = {
     0,
